@@ -13,7 +13,8 @@ class Login extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
-            child: Image.asset('Untitled-1.png'),
+            margin: EdgeInsets.symmetric(horizontal: 10.0 , vertical: 15.0),
+            child: Image.asset('assets/logo1.png'),
           ),
           Container(
             child: TextFormField(
