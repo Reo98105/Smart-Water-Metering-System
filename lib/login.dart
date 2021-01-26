@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:swms_user_auth_module/registration.dart';
 
 class Login extends StatelessWidget {
   @override
@@ -16,6 +17,7 @@ class Login extends StatelessWidget {
             child: Image.asset('assets/swmsword.png'),
           ),
           Container(
+            margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
             child: TextFormField(
               decoration: InputDecoration(
                 labelText: 'Username',
@@ -23,6 +25,7 @@ class Login extends StatelessWidget {
             ),
           ),
           Container(
+            margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
             child: TextFormField(
               decoration: InputDecoration(
                 labelText: 'Password',
@@ -49,7 +52,14 @@ class Login extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Register(),
+                        ),
+                      );
+                    },
                     icon: Icon(Icons.app_registration),
                     label: Text('Register'),
                     style: ElevatedButton.styleFrom(
