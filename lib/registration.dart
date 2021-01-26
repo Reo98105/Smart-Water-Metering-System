@@ -61,7 +61,7 @@ class _RegisterState extends State<Register> {
                     margin:
                         EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                     child: ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: isCheck ? () {} : null,
                       icon: Icon(Icons.app_registration),
                       label: Text('Register'),
                       style: ElevatedButton.styleFrom(
@@ -96,11 +96,18 @@ class _RegisterState extends State<Register> {
               ),
             ),
             Container(
+              margin: EdgeInsets.fromLTRB(5.0, 50.0, 5.0, 5.0),
               child: CheckboxListTile(
                 value: isCheck,
-                onChanged: null,
+                onChanged: (bool value) {
+                  setState(
+                    () {
+                      isCheck = value;
+                    },
+                  );
+                },
                 title: Text(
-                  'By clicking Sign Up, you agree to our Terms and that you have read our Data Use Policy, including our Cookie Use.',
+                  'By clicking Register, you agree to our Terms and that you have read our Data Use Policy, including our Cookie Use.',
                   style: TextStyle(fontSize: 13.0),
                 ),
                 controlAffinity: ListTileControlAffinity.leading,
