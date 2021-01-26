@@ -13,8 +13,7 @@ class Login extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 10.0 , vertical: 15.0),
-            child: Image.asset('assets/logo1.png'),
+            child: Image.asset('assets/swmsword.png'),
           ),
           Container(
             child: TextFormField(
@@ -31,16 +30,36 @@ class Login extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
-            child: ElevatedButton.icon(
-              onPressed: () {},
-              icon: Icon(Icons.subject),
-              label: Text('Submit'),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.cyan[400],
-                elevation: 5.0,
-                textStyle: TextStyle(fontSize: 16.0),
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                  child: ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: Icon(Icons.login),
+                    label: Text('Login'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.cyan[400],
+                      elevation: 5.0,
+                      textStyle: TextStyle(fontSize: 16.0),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                  child: ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: Icon(Icons.app_registration),
+                    label: Text('Register'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.cyan[400],
+                      elevation: 5.0,
+                      textStyle: TextStyle(fontSize: 16.0),
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
         ],
