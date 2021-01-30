@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ProcessRegister {
-
   showAlertDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
       backgroundColor: Colors.grey[300],
@@ -34,7 +33,7 @@ class ProcessRegister {
       actions: <Widget>[
         FlatButton(
           onPressed: () {
-            Navigator.popAndPushNamed(context, '/login');
+            Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
           },
           child: Text('Back to login'),
         ),
