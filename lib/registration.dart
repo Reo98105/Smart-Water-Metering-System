@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:swms_user_auth_module/login.dart';
 import 'package:swms_user_auth_module/Model/user.dart';
 import 'package:swms_user_auth_module/DAO/registerDAO.dart';
+import 'package:swms_user_auth_module/processRegister.dart';
 
 class Register extends StatelessWidget {
   @override
@@ -21,6 +22,7 @@ class Register extends StatelessWidget {
 class RegisterForm extends StatefulWidget {
   User user;
   RegisDAO regisDAO = new RegisDAO();
+  ProcessRegister processRegister = new ProcessRegister();
   @override
   _RegisterFormState createState() => _RegisterFormState();
 }
@@ -35,35 +37,6 @@ class _RegisterFormState extends State<RegisterForm> {
   TextEditingController _controller4;
 
   @override
-  showAlertDialog(BuildContext context) {
-    AlertDialog alert = AlertDialog(
-      backgroundColor: Colors.grey[300],
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      content: new Row(
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(
-            height: 15.0,
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 20.0),
-            child: Text('Loading...'),
-          ),
-        ],
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  @override
   void initState() {
     //start listen and make user.username default text become _controller1
     if (widget.user == null) widget.user = new User.def();
@@ -75,7 +48,6 @@ class _RegisterFormState extends State<RegisterForm> {
     _controller3.text = widget.user.email;
     _controller4 = TextEditingController();
     widget.user.nric = int.tryParse(_controller4.text);
-    _handleRegister(context);
     super.initState();
   }
 
@@ -238,8 +210,8 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   //handle registration event
-  Future<int> _handleRegister(BuildContext context) async {
-    showAlertDialog(context);
+  Future<void> _handleRegister(BuildContext context) async {
+    widget.processRegister.showAlertDialog(context);
     String username = _controller1.text;
     String password = _controller2.text;
     String email = _controller3.text;
@@ -252,47 +224,7 @@ class _RegisterFormState extends State<RegisterForm> {
         if (result == 1) {
           Navigator.of(_formKey.currentContext, rootNavigator: true)
               .pop(); //close the dialog
-          AlertDialog alert = AlertDialog(
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Login(),
-                    ),
-                  );
-                },
-                child: Text('Back to login'),
-              ),
-            ],
-            backgroundColor: Colors.grey[300],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            content: new Row(
-              children: [
-                Icon(
-                  Icons.check_circle_outline,
-                  color: Colors.green,
-                ),
-                SizedBox(
-                  height: 15.0,
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 20.0),
-                  child: Text('Register successful!'),
-                ),
-              ],
-            ),
-          );
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (BuildContext context) {
-              return alert;
-            },
-          );
+          widget.processRegister.showSuccess(context);
         } else {
           Navigator.of(_formKey.currentContext, rootNavigator: true)
               .pop(); //close the dialog
