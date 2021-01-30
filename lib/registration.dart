@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:swms_user_auth_module/login.dart';
+import 'package:swms_user_auth_module/Model/user.dart';
+import 'package:swms_user_auth_module/DAO/registerDAO.dart';
 
 class Register extends StatelessWidget {
   @override
@@ -17,6 +19,8 @@ class Register extends StatelessWidget {
 }
 
 class RegisterForm extends StatefulWidget {
+  User user;
+  RegisDAO regisDAO = new RegisDAO();
   @override
   _RegisterFormState createState() => _RegisterFormState();
 }
@@ -24,6 +28,66 @@ class RegisterForm extends StatefulWidget {
 class _RegisterFormState extends State<RegisterForm> {
   bool isCheck = false;
   final _formKey = GlobalKey<FormState>();
+
+  TextEditingController _controller1;
+  TextEditingController _controller2;
+  TextEditingController _controller3;
+  TextEditingController _controller4;
+
+  @override
+  showAlertDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.grey[300],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(
+            height: 15.0,
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 20.0),
+            child: Text('Loading...'),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    //start listen and make user.username default text become _controller1
+    if (widget.user == null) widget.user = new User.def();
+    _controller1 = TextEditingController();
+    _controller1.text = widget.user.username;
+    _controller2 = TextEditingController();
+    _controller2.text = widget.user.password;
+    _controller3 = TextEditingController();
+    _controller3.text = widget.user.email;
+    _controller4 = TextEditingController();
+    widget.user.nric = int.tryParse(_controller4.text);
+    _handleRegister(context);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    //clean up controller when widget is removed
+    _controller1.dispose();
+    _controller2.dispose();
+    _controller3.dispose();
+    _controller4.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +101,8 @@ class _RegisterFormState extends State<RegisterForm> {
             Container(
               margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
               child: TextFormField(
+                autofocus: true,
+                controller: _controller1,
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter Username';
@@ -51,6 +117,7 @@ class _RegisterFormState extends State<RegisterForm> {
             Container(
               margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
               child: TextFormField(
+                controller: _controller2,
                 obscureText: true,
                 validator: (value) {
                   if (value.isEmpty) {
@@ -67,9 +134,10 @@ class _RegisterFormState extends State<RegisterForm> {
             Container(
               margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
               child: TextFormField(
+                controller: _controller3,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter Email';
+                    return 'Please enter Email address';
                   }
                   return null;
                 },
@@ -81,9 +149,10 @@ class _RegisterFormState extends State<RegisterForm> {
             Container(
               margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
               child: TextFormField(
+                controller: _controller4,
                 keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp('[0-9]'))
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                 ],
                 decoration: InputDecoration(
                   labelText: 'NRIC',
@@ -104,11 +173,10 @@ class _RegisterFormState extends State<RegisterForm> {
                     margin:
                         EdgeInsets.symmetric(horizontal: 5.0, vertical: 15.0),
                     child: ElevatedButton.icon(
+                      //go to _handleRegister function..
                       onPressed: isCheck
                           ? () {
-                              if (_formKey.currentState.validate())
-                                debugPrint(
-                                    'Posting to server for registration...');
+                              _handleRegister(context);
                             }
                           : null,
                       icon: Icon(Icons.app_registration),
@@ -167,5 +235,118 @@ class _RegisterFormState extends State<RegisterForm> {
         ),
       ),
     );
+  }
+
+  //handle registration event
+  Future<int> _handleRegister(BuildContext context) async {
+    showAlertDialog(context);
+    String username = _controller1.text;
+    String password = _controller2.text;
+    String email = _controller3.text;
+    int nric = int.tryParse(_controller4.text);
+    if (_formKey.currentState.validate())
+      try {
+        widget.user = new User(username, nric, password, email);
+        int result = await widget.regisDAO.registerUser(widget.user);
+        print(result);
+        if (result == 1) {
+          Navigator.of(_formKey.currentContext, rootNavigator: true)
+              .pop(); //close the dialog
+          AlertDialog alert = AlertDialog(
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Login(),
+                    ),
+                  );
+                },
+                child: Text('Back to login'),
+              ),
+            ],
+            backgroundColor: Colors.grey[300],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            content: new Row(
+              children: [
+                Icon(
+                  Icons.check_circle_outline,
+                  color: Colors.green,
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 20.0),
+                  child: Text('Register successful!'),
+                ),
+              ],
+            ),
+          );
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return alert;
+            },
+          );
+        } else {
+          Navigator.of(_formKey.currentContext, rootNavigator: true)
+              .pop(); //close the dialog
+          AlertDialog alert = AlertDialog(
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: Text('Retry'),
+              ),
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Login(),
+                    ),
+                  );
+                },
+                child: Text('Back to login'),
+              ),
+            ],
+            backgroundColor: Colors.grey[300],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            content: new Row(
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: Colors.red,
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 20.0),
+                  child: Text('Something went wrong! Try again later!'),
+                ),
+              ],
+            ),
+          );
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return alert;
+            },
+          );
+        }
+      } catch (e, stacktrace) {
+        print(e);
+        print(stacktrace);
+      }
   }
 }

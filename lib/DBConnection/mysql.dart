@@ -4,7 +4,7 @@ class Mysql {
   static String host = "10.0.2.2",
       user = "root",
       password = "admin",
-      db = "testdb";
+      db = "swms";
 
   static int port = 3306;
 
