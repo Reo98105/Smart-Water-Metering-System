@@ -31,10 +31,9 @@ class RegisDAO {
       var results = await connect.query(ps, [user.username]);
       for (var row in results) {
         pw = row[0];
-        print(pw);        
       }
       //simple pw validation
-      if(pw == user.password){
+      if (pw == user.password) {
         status = true;
       }
       connect.close();
@@ -42,6 +41,33 @@ class RegisDAO {
       print(e);
       print(stacktrace);
     }
+    return status;
+  }
+
+  //get name from database
+  Future<String> getEmail(String username) async {
+    String email = '';
+    String ps = 'select email from user where username = ?';
+    var connect = await conn.getConnection();
+    var results = await connect.query(ps, [username]);
+    for (var row in results) {
+      email = row[0];
+    }
+    connect.close();
+    return email;
+  }
+
+  //validate and update password
+  Future<int> updatePass(User user) async {
+    int status = 0;
+    String ps =
+        'update user set uPassword = ? where username = ? and uPassword = ?';
+    var connect = await conn.getConnection();
+    var results =
+        await connect.query(ps, [user.password, user.username, user.password1]);
+    status = results.affectedRows;
+    print(status);
+    connect.close();
     return status;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swms_user_auth_module/DAO/registerDAO.dart';
 import 'package:swms_user_auth_module/Model/user.dart';
 import 'package:swms_user_auth_module/registration.dart';
@@ -21,7 +22,7 @@ class _LoginState extends State<Login> {
 
   @override
   void initState() {
-    if(widget.user == null) widget.user = new User.def();
+    if (widget.user == null) widget.user = new User.def();
     nameControl = TextEditingController();
     nameControl.text = widget.user.username;
     pwControl = TextEditingController();
@@ -135,22 +136,30 @@ class _LoginState extends State<Login> {
     );
   }
 
+  //save credentials
+  void saveCre() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('username', widget.user.username);
+    prefs.setString('pw', widget.user.password);
+  }
+
   //handle login event
   Future<void> _handleLogin(BuildContext context) async {
     widget.showAlert.showAlertDialog(context);
     String username = nameControl.text;
     String password = pwControl.text;
     if (_formKey.currentState.validate()) {
-      try{
-        widget.user = new User.login (username, password);
-        bool result = await widget.regisDAO.validateLogin(User.login(username, password));
-        print(result);
-        if(result = true){
-           Navigator.of(_formKey.currentContext, rootNavigator: true)
+      try {
+        widget.user = new User.login(username, password);
+        bool result =
+            await widget.regisDAO.validateLogin(User.login(username, password));
+        if (result = true) {
+          saveCre(); //save the credentials
+          Navigator.of(_formKey.currentContext, rootNavigator: true)
               .pop(); //close the dialog
-              widget.showAlert.showLSuccess(context);
+          widget.showAlert.showLSuccess(context);
         }
-      }catch (e, stacktrace){
+      } catch (e, stacktrace) {
         print(e);
         print(stacktrace);
       }

@@ -211,74 +211,74 @@ class _RegisterFormState extends State<RegisterForm> {
 
   //handle registration event
   Future<void> _handleRegister(BuildContext context) async {
-    widget.showAlert.showAlertDialog(context);
+    if (_formKey.currentState.validate())
+      widget.showAlert.showAlertDialog(context);
     String username = _controller1.text;
     String password = _controller2.text;
     String email = _controller3.text;
     int nric = int.tryParse(_controller4.text);
-    if (_formKey.currentState.validate())
-      try {
-        widget.user = new User(username, nric, password, email);
-        int result = await widget.regisDAO.registerUser(widget.user);
-        print(result);
-        if (result == 1) {
-          Navigator.of(_formKey.currentContext, rootNavigator: true)
-              .pop(); //close the dialog
-          widget.showAlert.showRSuccess(context);
-        } else {
-          Navigator.of(_formKey.currentContext, rootNavigator: true)
-              .pop(); //close the dialog
-          AlertDialog alert = AlertDialog(
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-                child: Text('Retry'),
+    try {
+      widget.user = new User(username, nric, password, email);
+      int result = await widget.regisDAO.registerUser(widget.user);
+      print(result);
+      if (result == 1) {
+        Navigator.of(_formKey.currentContext, rootNavigator: true)
+            .pop(); //close the dialog
+        widget.showAlert.showRSuccess(context);
+      } else {
+        Navigator.of(_formKey.currentContext, rootNavigator: true)
+            .pop(); //close the dialog
+        AlertDialog alert = AlertDialog(
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text('Retry'),
+            ),
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Login(),
+                  ),
+                );
+              },
+              child: Text('Back to login'),
+            ),
+          ],
+          backgroundColor: Colors.grey[300],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          content: new Row(
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: Colors.red,
               ),
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Login(),
-                    ),
-                  );
-                },
-                child: Text('Back to login'),
+              SizedBox(
+                height: 15.0,
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 20.0),
+                child: Text('Something went wrong! Try again later!'),
               ),
             ],
-            backgroundColor: Colors.grey[300],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            content: new Row(
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  color: Colors.red,
-                ),
-                SizedBox(
-                  height: 15.0,
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 20.0),
-                  child: Text('Something went wrong! Try again later!'),
-                ),
-              ],
-            ),
-          );
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (BuildContext context) {
-              return alert;
-            },
-          );
-        }
-      } catch (e, stacktrace) {
-        print(e);
-        print(stacktrace);
+          ),
+        );
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
       }
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
   }
 }

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'profile.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
+  @override
+  _DashboardState createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,18 +26,26 @@ class Dashboard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   Container(
-                    child: Text(
-                      'Hello, Helena!',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                      ),
+                    child: FutureBuilder(
+                      future: getCre(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Text(
+                            snapshot.data,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18.0),
+                          );
+                        } else {
+                          return Text('');
+                        }
+                      },
                     ),
                   ),
                   Container(
                     alignment: FractionalOffset.topRight,
                     margin: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 25.0),
                     child: Icon(
-                      Icons.face_unlock_rounded,
+                      Icons.face_sharp,
                       size: 100.0,
                     ),
                   ),
@@ -101,5 +115,11 @@ class Dashboard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  getCre() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String username = prefs.getString('username');
+    return username;
   }
 }
