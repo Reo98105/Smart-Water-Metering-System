@@ -145,10 +145,10 @@ class _LoginState extends State<Login> {
 
   //handle login event
   Future<void> _handleLogin(BuildContext context) async {
-    widget.showAlert.showAlertDialog(context);
-    String username = nameControl.text;
-    String password = pwControl.text;
     if (_formKey.currentState.validate()) {
+      widget.showAlert.showAlertDialog(context);
+      String username = nameControl.text;
+      String password = pwControl.text;
       try {
         widget.user = new User.login(username, password);
         bool result =

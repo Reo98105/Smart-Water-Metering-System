@@ -32,7 +32,7 @@ class _ProfileState extends State<Profile> {
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.pop(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => UpdateProfile(),
