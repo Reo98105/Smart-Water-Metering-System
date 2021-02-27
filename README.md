@@ -1,6 +1,6 @@
 # swms_user_auth_module
 
-A new Flutter project.
+A new Flutter project. This project is part of a bigger project with will merge with in the future.
 
 ## Getting Started
 

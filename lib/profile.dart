@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swms_user_auth_module/DAO/registerDAO.dart';
 import 'package:swms_user_auth_module/Model/user.dart';
 import 'package:swms_user_auth_module/updateProfile.dart';
+import 'package:swms_user_auth_module/addAcc.dart';
 
 class Profile extends StatefulWidget {
   RegisDAO regisDAO = new RegisDAO();
@@ -71,7 +72,7 @@ class _ProfileState extends State<Profile> {
                           fontWeight: FontWeight.bold, fontSize: 18.0),
                     );
                   } else {
-                    return Text('');
+                    return Text('Loading..');
                   }
                 },
               ),
@@ -88,7 +89,7 @@ class _ProfileState extends State<Profile> {
                       style: TextStyle(fontSize: 16.0),
                     );
                   } else {
-                    return Text('');
+                    return Text('Loading..');
                   }
                 },
               ),
@@ -98,7 +99,14 @@ class _ProfileState extends State<Profile> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.lightBlueAccent,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddAcc(),
+            ),
+          );
+        },
         child: Icon(
           Icons.add,
           size: 30.0,
