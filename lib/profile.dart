@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swms_user_auth_module/DAO/registerDAO.dart';
+import 'package:swms_user_auth_module/DAO/userDAO.dart';
 import 'package:swms_user_auth_module/Model/user.dart';
 import 'package:swms_user_auth_module/updateProfile.dart';
 import 'package:swms_user_auth_module/addAcc.dart';
 
 class Profile extends StatefulWidget {
-  RegisDAO regisDAO = new RegisDAO();
+  UserDAO userDAO = new UserDAO();
   User user;
   @override
   _ProfileState createState() => _ProfileState();
@@ -15,10 +15,15 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   String username = '';
 
+  //get username from sharepreferences
   String _getUsername() {
-    getCre().then((value) => setState(() {
+    getCre().then(
+      (value) => setState(
+        () {
           username = value;
-        }));
+        },
+      ),
+    );
     return username;
   }
 
@@ -30,7 +35,7 @@ class _ProfileState extends State<Profile> {
         backgroundColor: Colors.lightBlueAccent,
         actions: <Widget>[
           Padding(
-            padding: EdgeInsets.only(right: 20.0),
+            padding: EdgeInsets.only(right: 15.0),
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -42,7 +47,7 @@ class _ProfileState extends State<Profile> {
               },
               child: Icon(
                 Icons.edit_rounded,
-                size: 26.0,
+                size: 20.0,
               ),
             ),
           )
@@ -51,6 +56,7 @@ class _ProfileState extends State<Profile> {
       body: Container(
         child: Column(
           children: <Widget>[
+            //profile icon
             Container(
               margin: EdgeInsets.fromLTRB(5.0, 50.0, 5.0, 0.0),
               alignment: FractionalOffset.center,
@@ -59,6 +65,7 @@ class _ProfileState extends State<Profile> {
                 size: 100.0,
               ),
             ),
+            //display username
             Container(
               margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
               alignment: FractionalOffset.center,
@@ -77,11 +84,12 @@ class _ProfileState extends State<Profile> {
                 },
               ),
             ),
+            //display user email
             Container(
               margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),
               alignment: FractionalOffset.center,
               child: FutureBuilder(
-                future: widget.regisDAO.getEmail(_getUsername()),
+                future: widget.userDAO.getEmail(_getUsername()),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Text(
@@ -94,6 +102,28 @@ class _ProfileState extends State<Profile> {
                 },
               ),
             ),
+            //act as seperator
+            Divider(
+              color: Colors.grey[400],
+              thickness: 2,
+              height: 30.0,
+            ),
+            //display managed accounts
+            /*Container(
+              child: ListView.builder(
+                itemBuilder: (context, position) {
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        position.toString(),
+                        style: TextStyle(fontSize: 22.0),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),*/
           ],
         ),
       ),
@@ -120,11 +150,5 @@ class _ProfileState extends State<Profile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String username = prefs.getString('username');
     return username;
-  }
-
-  getPassword() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String password = prefs.getString('password');
-    return password;
   }
 }

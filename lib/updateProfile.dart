@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swms_user_auth_module/DAO/registerDAO.dart';
+import 'package:swms_user_auth_module/DAO/userDAO.dart';
 import 'package:swms_user_auth_module/Model/user.dart';
 import 'package:swms_user_auth_module/profile.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
 
 class UpdateProfile extends StatefulWidget {
   User user;
-  RegisDAO regisDAO = new RegisDAO();
+  UserDAO userDAO = new UserDAO();
   ShowAlert showAlert = new ShowAlert();
 
   @override
@@ -16,6 +16,7 @@ class UpdateProfile extends StatefulWidget {
 
 class _UpdateProfileState extends State<UpdateProfile> {
   String username = '';
+  String oldpassword = '';
 
   final _formKey = GlobalKey<FormState>();
 
@@ -23,12 +24,20 @@ class _UpdateProfileState extends State<UpdateProfile> {
   TextEditingController newpw;
   TextEditingController renewpw;
 
-  //get username from credential
+  //get username from sharepreferences
   String _getUsername() {
     getCre().then((value) => setState(() {
           username = value;
         }));
     return username;
+  }
+
+  //get current password from sharepreferences
+  String _getOldPw() {
+    getPassword().then((value) => setState(() {
+          oldpassword = value;
+        }));
+    return oldpassword;
   }
 
   @override
@@ -173,31 +182,73 @@ class _UpdateProfileState extends State<UpdateProfile> {
     return username;
   }
 
-  getPassword() async{
+  Future<String> getPassword() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String password = prefs.getString('password');
+    String password = prefs.getString('pw');
     return password;
   }
 
   //handle update request
   Future<void> _handleUpdate(BuildContext context) async {
     String oldpass = oldpw.text;
-    if (_formKey.currentState.validate() && (oldpass == getPassword())) {
+    if (_formKey.currentState.validate() && (oldpass == _getOldPw())) {
       String newpass = newpw.text;
-      String renewpass = renewpw.text;
       widget.showAlert.showAlertDialog(context); //show loading pop up
       try {
-        widget.user =
-            new User.update(_getUsername(), oldpass, newpass, renewpass);
-        int result = await widget.regisDAO.updatePass(widget.user);
+        widget.user = new User.login(_getUsername(), newpass);
+        int result = await widget.userDAO.updatePass(widget.user);
         print(result);
         if (result == 1) {
           Navigator.of(_formKey.currentContext, rootNavigator: true)
               .pop(); //close the dialog
+          AlertDialog alert = AlertDialog(
+            title: Text('Success!'),
+            //actions of the dialog box
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UpdateProfile(),
+                    ),
+                  );
+                },
+                child: Text('Back to profile'),
+              ),
+            ],
+            backgroundColor: Colors.grey[300],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            content: new Row(
+              children: [
+                Icon(
+                  Icons.check_circle_outline,
+                  color: Colors.green,
+                  size: 40.0,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  child: Text('Password has been\nsuccessfully updated!'),
+                ),
+              ],
+            ),
+          );
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return alert;
+            },
+          );
         } else {
           Navigator.of(_formKey.currentContext, rootNavigator: true)
               .pop(); //close the dialog
+          //alert dialog design..?
           AlertDialog alert = AlertDialog(
+            title: Text('Oops!'),
+            //actions of the dialog box
             actions: <Widget>[
               FlatButton(
                 onPressed: () {
@@ -226,12 +277,11 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 Icon(
                   Icons.error_outline,
                   color: Colors.red,
-                ),
-                SizedBox(
-                  height: 15.0,
+                  size: 40.0,
                 ),
                 Container(
-                  child: Text('Something went wrong! Try again later!'),
+                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  child: Text('Something went wrong!\nTry again later!'),
                 ),
               ],
             ),
@@ -248,6 +298,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
         print(e);
         print(stacktrace);
       }
-    }
+    } else
+      //debug purpose
+      print("something wrong");
   }
 }

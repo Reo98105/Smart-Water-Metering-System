@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swms_user_auth_module/showAlert.dart';
 
 import 'profile.dart';
 
 class Dashboard extends StatefulWidget {
+  ShowAlert showAlert = new ShowAlert();
   @override
   _DashboardState createState() => _DashboardState();
 }
@@ -15,6 +17,19 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         title: Text("Dashboard"),
         backgroundColor: Colors.lightBlueAccent,
+        actions: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(right: 15.0),
+              child: GestureDetector(
+                onTap: () {
+                  _handleLogout(context);
+                },
+                child: Icon(
+                  Icons.exit_to_app_rounded,
+                  size: 20.0,
+                ),
+              ))
+        ],
       ),
       body: Container(
         child: Column(
@@ -121,5 +136,72 @@ class _DashboardState extends State<Dashboard> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String username = prefs.getString('username');
     return username;
+  }
+
+  //logout confirmation
+  void _handleLogout(BuildContext context) {
+    //show confirmation dialog
+    AlertDialog alert = AlertDialog(
+      title: Text('Logout'),
+      //actions of the dialog box
+      actions: <Widget>[
+        FlatButton(
+          onPressed: () {
+            _logout(context);
+          },
+          child: Text('Confirm'),
+        ),
+        FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop(true);
+          },
+          child: Text('Cancel'),
+        ),
+      ],
+      backgroundColor: Colors.grey[300],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      content: new Row(
+        children: [
+          Icon(
+            Icons.exit_to_app,
+            color: Colors.grey[600],
+            size: 40.0,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 5.0),
+            child: Text('Logout from the app?'),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  //handle logout logic
+  void _logout(BuildContext context) async {
+    //clear sharedpreferences before logging out
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    //check if sharedpreferences cleared
+    String username = prefs.getString('username');
+    print(username);
+    if (username == null) {
+      //show loading dialog
+      widget.showAlert.showAlertDialog(context);
+      //back to login screen
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+    } else {
+      //debug purpose
+      print('something wrong');
+    }
   }
 }

@@ -52,10 +52,13 @@ class _LoginState extends State<Login> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
-              child: Image.asset('assets/swmsword.png'),
+              child: Image.asset(
+                'assets/swmsword.png',
+                scale: 1.2,
+              ),
             ),
             Container(
-              margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+              margin: EdgeInsets.symmetric(horizontal: 10.0),
               child: TextFormField(
                 controller: nameControl,
                 validator: (value) {
@@ -70,7 +73,7 @@ class _LoginState extends State<Login> {
               ),
             ),
             Container(
-              margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+              margin: EdgeInsets.symmetric(horizontal: 10.0),
               child: TextFormField(
                 controller: pwControl,
                 obscureText: true,
@@ -92,7 +95,7 @@ class _LoginState extends State<Login> {
                 children: <Widget>[
                   Container(
                     margin:
-                        EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                        EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),
                     child: ElevatedButton.icon(
                       onPressed: () {
                         _handleLogin(context);
@@ -108,7 +111,7 @@ class _LoginState extends State<Login> {
                   ),
                   Container(
                     margin:
-                        EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                        EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),
                     child: ElevatedButton.icon(
                       onPressed: () {
                         Navigator.push(
@@ -151,14 +154,23 @@ class _LoginState extends State<Login> {
       String password = pwControl.text;
       try {
         widget.user = new User.login(username, password);
-        bool result =
+        String result =
             await widget.regisDAO.validateLogin(User.login(username, password));
-        if (result = true) {
+        if (result == password) {
           saveCre(); //save the credentials
           Navigator.of(_formKey.currentContext, rootNavigator: true)
-              .pop(); //close the dialog
-          widget.showAlert.showLSuccess(context);
+              .pop(); //close loading dialog
+          return widget.showAlert.showLSuccess(context);
         }
+        //close loading dialog
+        Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
+        print(result);
+        //guard clause
+        return widget.showAlert.showLFailed(context);
+        /*else {
+          print('something wrong');
+          widget.showAlert.showLFailed(context);
+        }*/
       } catch (e, stacktrace) {
         print(e);
         print(stacktrace);
