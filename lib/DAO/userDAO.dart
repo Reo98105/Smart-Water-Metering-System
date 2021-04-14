@@ -20,19 +20,12 @@ class UserDAO {
   //update password
   Future<int> updatePass(User user) async {
     int status = 0;
-    print(user.password);
-    print(user.username);
-    String ps =
-        'update user set uPassword = ? where username = ?';
+    String ps = 'update user set uPassword = ? where user_ID = ?';
     var connect = await conn.getConnection();
-    var results =
-        await connect.query(ps, [user.password, user.username]);
+    var results = await connect.query(ps, [user.password, user.id]);
     status = results.affectedRows;
     print(status);
     connect.close();
     return status;
   }
-
-  //get managed accounts lists
-
 }

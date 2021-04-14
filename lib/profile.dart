@@ -2,29 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swms_user_auth_module/DAO/userDAO.dart';
 import 'package:swms_user_auth_module/Model/user.dart';
+import 'package:swms_user_auth_module/Model/account.dart';
 import 'package:swms_user_auth_module/updateProfile.dart';
 import 'package:swms_user_auth_module/addAcc.dart';
+import 'package:swms_user_auth_module/DAO/accountDAO.dart';
 
 class Profile extends StatefulWidget {
   UserDAO userDAO = new UserDAO();
+  AccountDAO accountDAO = new AccountDAO();
   User user;
+  Account account;
   @override
   _ProfileState createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
   String username = '';
+  int userid;
 
   //get username from sharepreferences
   String _getUsername() {
-    getCre().then(
-      (value) => setState(
-        () {
+    getUsername().then((value) => setState(() {
           username = value;
-        },
-      ),
-    );
+        }));
     return username;
+  }
+
+  //get userid from sharepreferences
+  int _getUserid() {
+    getUserid().then((value) => setState(() {
+          userid = value;
+        }));
+    return userid;
   }
 
   @override
@@ -70,7 +79,7 @@ class _ProfileState extends State<Profile> {
               margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
               alignment: FractionalOffset.center,
               child: FutureBuilder(
-                future: getCre(),
+                future: getUsername(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Text(
@@ -109,21 +118,32 @@ class _ProfileState extends State<Profile> {
               height: 30.0,
             ),
             //display managed accounts
-            /*Container(
-              child: ListView.builder(
-                itemBuilder: (context, position) {
-                  return Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        position.toString(),
-                        style: TextStyle(fontSize: 22.0),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),*/
+            Container(
+              child: FutureBuilder(
+                  future: getAccount(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.none &&
+                        snapshot.hasData == null) {
+                      return Container(child: Text('something gone wrong!'));
+                    }
+                    return ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        widget.accountDAO = snapshot.data[index];
+                        //item data here
+                        return Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              index.toString(),
+                              style: TextStyle(fontSize: 22.0),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }),
+            )
           ],
         ),
       ),
@@ -145,10 +165,23 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  //get credential
-  Future<String> getCre() async {
+  //get username
+  Future<String> getUsername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String username = prefs.getString('username');
     return username;
+  }
+
+  //get userid
+  Future<int> getUserid() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int userid = prefs.getInt('id');
+    return userid;
+  }
+
+  //get account list
+  Future getAccount() async {
+    List<Account> accList = await widget.accountDAO.getAcc(_getUserid());
+    return accList;
   }
 }

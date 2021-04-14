@@ -4,7 +4,7 @@ import 'package:swms_user_auth_module/login.dart';
 
 class ShowAlert {
   //processing alert dialog
-  showAlertDialog(BuildContext context) {
+  showLoadingDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
       backgroundColor: Colors.grey[300],
       shape: RoundedRectangleBorder(
@@ -36,7 +36,7 @@ class ShowAlert {
   showRSuccess(BuildContext context) {
     AlertDialog alert = AlertDialog(
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           onPressed: () {
             Navigator.popUntil(
                 context, ModalRoute.withName(Navigator.defaultRouteName));
@@ -76,8 +76,9 @@ class ShowAlert {
   //login success alert dialog
   showLSuccess(BuildContext context) {
     AlertDialog alert = AlertDialog(
+      title: Text('Logged in'),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           onPressed: () {
             Navigator.pushAndRemoveUntil(
               context,
@@ -97,9 +98,7 @@ class ShowAlert {
           Icon(
             Icons.check_circle_outline,
             color: Colors.green,
-          ),
-          SizedBox(
-            height: 5.0,
+            size: 40.0,
           ),
           Container(
             margin: EdgeInsets.only(left: 20.0),
@@ -125,7 +124,7 @@ class ShowAlert {
     AlertDialog alert = AlertDialog(
       title: Text('Oops!'),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           onPressed: () {
             Navigator.of(context).pop(true);
           },

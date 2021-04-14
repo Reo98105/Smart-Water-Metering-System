@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swms_user_auth_module/DAO/registerDAO.dart';
+import 'package:swms_user_auth_module/DAO/regislogDAO.dart';
 import 'package:swms_user_auth_module/Model/user.dart';
 import 'package:swms_user_auth_module/registration.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
 
+import 'Model/user.dart';
+
 class Login extends StatefulWidget {
   //instantiate things
   User user;
-  RegisDAO regisDAO = new RegisDAO();
+  RegislogDAO regislogDAO = new RegislogDAO();
   ShowAlert showAlert = new ShowAlert();
+
   @override
   _LoginState createState() => _LoginState();
 }
@@ -142,6 +145,7 @@ class _LoginState extends State<Login> {
   //save credentials
   void saveCre() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('id', widget.user.id);
     prefs.setString('username', widget.user.username);
     prefs.setString('pw', widget.user.password);
   }
@@ -149,15 +153,26 @@ class _LoginState extends State<Login> {
   //handle login event
   Future<void> _handleLogin(BuildContext context) async {
     if (_formKey.currentState.validate()) {
-      widget.showAlert.showAlertDialog(context);
+      //show loading dialog
+      widget.showAlert.showLoadingDialog(context);
       String username = nameControl.text;
       String password = pwControl.text;
       try {
-        widget.user = new User.login(username, password);
         String result =
-            await widget.regisDAO.validateLogin(User.login(username, password));
+            await widget.regislogDAO.validateLogin(User.cre(username));
         if (result == password) {
-          saveCre(); //save the credentials
+          //get user's unique id
+          try {
+            int result = await widget.regislogDAO.getID(User.cre(username));
+            widget.user.id = result;
+            widget.user.username = username;
+            widget.user.password = password;
+            //save the credentials
+            saveCre();
+          } catch (e, stacktrace) {
+            print(e);
+            print(stacktrace);
+          }
           Navigator.of(_formKey.currentContext, rootNavigator: true)
               .pop(); //close loading dialog
           return widget.showAlert.showLSuccess(context);
@@ -167,10 +182,6 @@ class _LoginState extends State<Login> {
         print(result);
         //guard clause
         return widget.showAlert.showLFailed(context);
-        /*else {
-          print('something wrong');
-          widget.showAlert.showLFailed(context);
-        }*/
       } catch (e, stacktrace) {
         print(e);
         print(stacktrace);

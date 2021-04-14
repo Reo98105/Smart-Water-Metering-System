@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swms_user_auth_module/payment.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
 
 import 'profile.dart';
@@ -116,7 +117,12 @@ class _DashboardState extends State<Dashboard> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Payment(),
+                    ),
+                  );},
                 icon: Icon(Icons.monetization_on),
                 label: Text('Bills'),
                 style: ElevatedButton.styleFrom(
@@ -195,7 +201,7 @@ class _DashboardState extends State<Dashboard> {
     print(username);
     if (username == null) {
       //show loading dialog
-      widget.showAlert.showAlertDialog(context);
+      widget.showAlert.showLoadingDialog(context);
       //back to login screen
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);

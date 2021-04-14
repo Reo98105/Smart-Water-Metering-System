@@ -1,7 +1,7 @@
 import 'package:swms_user_auth_module/DBConnection/mysql.dart';
 import 'package:swms_user_auth_module/Model/user.dart';
 
-class RegisDAO {
+class RegislogDAO {
   var conn = new Mysql();
 
   //registration
@@ -23,7 +23,6 @@ class RegisDAO {
 
   //validate login info
   Future<String> validateLogin(User user) async {
-    //bool status = false;
     var pw = '';
     String ps = 'select uPassword from user where username = ?';
     try {
@@ -32,17 +31,29 @@ class RegisDAO {
       for (var row in results) {
         pw = row[0];
       }
-      /*print(pw);
-      print(user.password);
-      //simple pw validation
-      if (user.password == pw) {
-        status = true;
-      }*/
       connect.close();
     } catch (e, stacktrace) {
       print(e);
       print(stacktrace);
     }
     return pw;
+  }
+
+  //get user unique id
+  Future<int> getID(User user) async {
+    var userID;
+    String ps = 'select user_ID from user where username = ?';
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps, [user.username]);
+      for (var row in results) {
+        userID = row[0];
+      }
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    return userID;
   }
 }

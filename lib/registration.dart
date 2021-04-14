@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:swms_user_auth_module/login.dart';
 import 'package:swms_user_auth_module/Model/user.dart';
-import 'package:swms_user_auth_module/DAO/registerDAO.dart';
+import 'package:swms_user_auth_module/DAO/regislogDAO.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
 
 class Register extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Register'),
         backgroundColor: Colors.lightBlueAccent,
@@ -21,7 +21,7 @@ class Register extends StatelessWidget {
 
 class RegisterForm extends StatefulWidget {
   User user;
-  RegisDAO regisDAO = new RegisDAO();
+  RegislogDAO regisDAO = new RegislogDAO();
   ShowAlert showAlert = new ShowAlert();
   @override
   _RegisterFormState createState() => _RegisterFormState();
@@ -212,7 +212,7 @@ class _RegisterFormState extends State<RegisterForm> {
   //handle registration event
   Future<void> _handleRegister(BuildContext context) async {
     if (_formKey.currentState.validate())
-      widget.showAlert.showAlertDialog(context);
+      widget.showAlert.showLoadingDialog(context);
     String username = _controller1.text;
     String password = _controller2.text;
     String email = _controller3.text;
@@ -230,13 +230,13 @@ class _RegisterFormState extends State<RegisterForm> {
             .pop(); //close the dialog
         AlertDialog alert = AlertDialog(
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
               child: Text('Retry'),
             ),
-            FlatButton(
+            TextButton(
               onPressed: () {
                 Navigator.pop(
                   context,

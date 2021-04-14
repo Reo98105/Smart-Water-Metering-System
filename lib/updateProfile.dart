@@ -15,7 +15,7 @@ class UpdateProfile extends StatefulWidget {
 }
 
 class _UpdateProfileState extends State<UpdateProfile> {
-  String username = '';
+  int id;
   String oldpassword = '';
 
   final _formKey = GlobalKey<FormState>();
@@ -25,11 +25,11 @@ class _UpdateProfileState extends State<UpdateProfile> {
   TextEditingController renewpw;
 
   //get username from sharepreferences
-  String _getUsername() {
-    getCre().then((value) => setState(() {
-          username = value;
+  int _getId() {
+    getId().then((value) => setState(() {
+          id = value;
         }));
-    return username;
+    return id;
   }
 
   //get current password from sharepreferences
@@ -176,10 +176,10 @@ class _UpdateProfileState extends State<UpdateProfile> {
   }
 
   //get credential
-  Future<String> getCre() async {
+  Future<int> getId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String username = prefs.getString('username');
-    return username;
+    int userid = prefs.getInt('id');
+    return userid;
   }
 
   Future<String> getPassword() async {
@@ -191,11 +191,13 @@ class _UpdateProfileState extends State<UpdateProfile> {
   //handle update request
   Future<void> _handleUpdate(BuildContext context) async {
     String oldpass = oldpw.text;
+    print(_getOldPw());
+    print(_getId());
     if (_formKey.currentState.validate() && (oldpass == _getOldPw())) {
       String newpass = newpw.text;
-      widget.showAlert.showAlertDialog(context); //show loading pop up
+      widget.showAlert.showLoadingDialog(context); //show loading pop up
       try {
-        widget.user = new User.login(_getUsername(), newpass);
+        widget.user = new User.up(_getId(), newpass);
         int result = await widget.userDAO.updatePass(widget.user);
         print(result);
         if (result == 1) {
@@ -205,7 +207,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
             title: Text('Success!'),
             //actions of the dialog box
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.pop(
                     context,
@@ -250,13 +252,13 @@ class _UpdateProfileState extends State<UpdateProfile> {
             title: Text('Oops!'),
             //actions of the dialog box
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
                 child: Text('Retry'),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.pop(
                     context,

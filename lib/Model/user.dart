@@ -1,11 +1,12 @@
 class User {
   String username;
   int nric;
-  var email, password, password1, password2;
+  var email, password, password1, password2, id;
 
-  User.login(this.username, this.password);
+  User.id(this.username, this.id);
+  User.login(this.id, this.username, this.password);
+  User.up(this.id, this.password);
   User.cre(this.username);
-  User.update(this.username, this.password, this.password1, this.password2);
 
   User(this.username, this.nric, this.password, this.email);
 
