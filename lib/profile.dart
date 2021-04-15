@@ -9,7 +9,7 @@ import 'package:swms_user_auth_module/DAO/accountDAO.dart';
 
 class Profile extends StatefulWidget {
   UserDAO userDAO = new UserDAO();
-  AccountDAO accountDAO = new AccountDAO();
+  //AccountDAO accountDAO = new AccountDAO();
   User user;
   Account account;
   @override
@@ -19,6 +19,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   String username = '';
   int userid;
+  AccountDAO accountDAO = new AccountDAO();
 
   //get username from sharepreferences
   String _getUsername() {
@@ -124,24 +125,26 @@ class _ProfileState extends State<Profile> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.none &&
                         snapshot.hasData == null) {
-                      return Container(child: Text('something gone wrong!'));
+                      return CircularProgressIndicator();
+                    } else {
+                      return ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext context, index) {
+                            accountDAO = snapshot.data[index];
+                            //item data here
+                            return Container(
+                                padding: EdgeInsets.only(bottom: 2),
+                                child: Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(
+                                      index.toString(),
+                                      style: TextStyle(fontSize: 22.0),
+                                    ),
+                                  ),
+                                ));
+                          });
                     }
-                    return ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        widget.accountDAO = snapshot.data[index];
-                        //item data here
-                        return Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              index.toString(),
-                              style: TextStyle(fontSize: 22.0),
-                            ),
-                          ),
-                        );
-                      },
-                    );
                   }),
             )
           ],
@@ -181,7 +184,7 @@ class _ProfileState extends State<Profile> {
 
   //get account list
   Future getAccount() async {
-    List<Account> accList = await widget.accountDAO.getAcc(_getUserid());
+    List<Account> accList = await accountDAO.getAcc(_getUserid());
     return accList;
   }
 }
