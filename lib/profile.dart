@@ -9,17 +9,35 @@ import 'package:swms_user_auth_module/DAO/accountDAO.dart';
 
 class Profile extends StatefulWidget {
   UserDAO userDAO = new UserDAO();
-  //AccountDAO accountDAO = new AccountDAO();
   User user;
-  Account account;
+
   @override
   _ProfileState createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
   String username = '';
-  int userid;
+  int id;
+  Account account;
+
   AccountDAO accountDAO = new AccountDAO();
+
+  SharedPreferences preferences;
+  Future<List> _accList;
+
+  //get userid
+  Future<int> getUserid() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int userid = prefs.getInt('id');
+    return userid;
+  }
+
+  //get username
+  Future<String> getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String username = prefs.getString('username');
+    return username;
+  }
 
   //get username from sharepreferences
   String _getUsername() {
@@ -32,9 +50,20 @@ class _ProfileState extends State<Profile> {
   //get userid from sharepreferences
   int _getUserid() {
     getUserid().then((value) => setState(() {
-          userid = value;
+          id = value;
         }));
-    return userid;
+    return id;
+  }
+
+  Future<List> getAcc() async {
+    List<Account> account = await accountDAO.getAcc(_getUserid());
+    return account;
+  }
+
+  //invoke once only before building widget
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -120,30 +149,33 @@ class _ProfileState extends State<Profile> {
             ),
             //display managed accounts
             Container(
-              child: FutureBuilder(
-                  future: getAccount(),
+              child: FutureBuilder<List>(
+                  future: getAcc(),
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.none &&
-                        snapshot.hasData == null) {
-                      return CircularProgressIndicator();
-                    } else {
+                    if (snapshot.connectionState == ConnectionState.done ||
+                        snapshot.hasData) {
                       return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
                           itemCount: snapshot.data.length,
-                          itemBuilder: (BuildContext context, index) {
-                            accountDAO = snapshot.data[index];
+                          itemBuilder: (context, index) {
+                            Account account = snapshot.data[index];
                             //item data here
                             return Container(
-                                padding: EdgeInsets.only(bottom: 2),
                                 child: Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Text(
-                                      index.toString(),
-                                      style: TextStyle(fontSize: 22.0),
-                                    ),
-                                  ),
-                                ));
+                              child: Column(children: <Widget>[
+                                ListTile(
+                                    leading: Icon(Icons.home),
+                                    title: Text('${account.accNickname}'),
+                                    subtitle: Text('${account.accNumber}'))
+                              ]),
+                            ));
                           });
+                    }
+                    if (snapshot.hasData == null) {
+                      return Center(child: Text('No account has been added.'));
+                    } else {
+                      return Center(child: CircularProgressIndicator());
                     }
                   }),
             )
@@ -166,25 +198,5 @@ class _ProfileState extends State<Profile> {
         ),
       ),
     );
-  }
-
-  //get username
-  Future<String> getUsername() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String username = prefs.getString('username');
-    return username;
-  }
-
-  //get userid
-  Future<int> getUserid() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int userid = prefs.getInt('id');
-    return userid;
-  }
-
-  //get account list
-  Future getAccount() async {
-    List<Account> accList = await accountDAO.getAcc(_getUserid());
-    return accList;
   }
 }

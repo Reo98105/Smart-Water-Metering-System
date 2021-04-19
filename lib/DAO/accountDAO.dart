@@ -1,4 +1,3 @@
-import 'package:mysql1/mysql1.dart';
 import 'package:swms_user_auth_module/DBConnection/mysql.dart';
 import 'package:swms_user_auth_module/Model/account.dart';
 
@@ -28,15 +27,23 @@ class AccountDAO {
     List<Account> accounts = [];
     //get the whole list
     String ps =
-        'select accNumber and accNickname from supervision where user_ID = ?';
+        'select accNumber, accNickname from supervision where user_ID = ?';
     try {
       var connect = await conn.getConnection();
       var results = await connect.query(ps, [userid]);
-      for(var row in results){
-        Account account = new Account();
-        account.accNumber = row[0];
-        account.accNickname = row[1];
-        accounts.add(account);
+      Account account = new Account();
+      if (results.length == 1) {
+        for (var row in results) {
+          account.accNumber = row[0];
+          account.accNickname = row[1];
+          accounts.add(account);
+        }
+      } else {
+        for (var row in results) {
+          account.accNumber = row['accNumber'];
+          account.accNickname = row['accNickname'];
+          accounts.add(account);
+        }
       }
       connect.close();
     } catch (e, stacktrace) {

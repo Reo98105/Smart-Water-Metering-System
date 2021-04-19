@@ -151,13 +151,13 @@ class _DashboardState extends State<Dashboard> {
       title: Text('Logout'),
       //actions of the dialog box
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           onPressed: () {
             _logout(context);
           },
           child: Text('Confirm'),
         ),
-        FlatButton(
+        TextButton(
           onPressed: () {
             Navigator.of(context).pop(true);
           },
