@@ -23,7 +23,6 @@ class _ProfileState extends State<Profile> {
   AccountDAO accountDAO = new AccountDAO();
 
   SharedPreferences preferences;
-  Future<List> _accList;
 
   //get userid
   Future<int> getUserid() async {
@@ -56,14 +55,8 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<List> getAcc() async {
-    List<Account> account = await accountDAO.getAcc(_getUserid());
+    List account = await accountDAO.getAcc(_getUserid());
     return account;
-  }
-
-  //invoke once only before building widget
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
@@ -92,7 +85,7 @@ class _ProfileState extends State<Profile> {
           )
         ],
       ),
-      body: Container(
+      body: SafeArea(
         child: Column(
           children: <Widget>[
             //profile icon
@@ -159,7 +152,7 @@ class _ProfileState extends State<Profile> {
                           shrinkWrap: true,
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
-                            Account account = snapshot.data[index];
+                            account = snapshot.data[index];
                             //item data here
                             return Container(
                                 child: Card(

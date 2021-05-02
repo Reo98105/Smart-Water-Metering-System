@@ -24,26 +24,40 @@ class AccountDAO {
   //get managed accounts lists
   Future<List> getAcc(int userid) async {
     //create a list
-    List<Account> accounts = [];
+    List accounts = [];
     //get the whole list
     String ps =
         'select accNumber, accNickname from supervision where user_ID = ?';
     try {
       var connect = await conn.getConnection();
       var results = await connect.query(ps, [userid]);
-      Account account = new Account();
-      if (results.length == 1) {
-        for (var row in results) {
-          account.accNumber = row[0];
-          account.accNickname = row[1];
-          accounts.add(account);
-        }
-      } else {
-        for (var row in results) {
-          account.accNumber = row['accNumber'];
-          account.accNickname = row['accNickname'];
-          accounts.add(account);
-        }
+      for (var row in results) {
+        Account acc = new Account();
+        acc.accNickname = row['accNickname'];
+        acc.accNumber = row['accNumber'];
+
+        accounts.add(acc);
+      }
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    return accounts;
+  }
+
+  //get managed accounts' numbers
+  Future<List> getAccNum(int userid) async {
+    //create a list
+    List<String> accounts = [];
+    //get the whole list
+    String ps = 'select accNumber from supervision where user_ID = ?';
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps, [userid]);
+      for (var row in results) {
+        String accNumber = row['accNumber'];
+        accounts.add(accNumber);
       }
       connect.close();
     } catch (e, stacktrace) {

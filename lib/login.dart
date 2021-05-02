@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swms_user_auth_module/DAO/accountDAO.dart';
 import 'package:swms_user_auth_module/DAO/regislogDAO.dart';
+import 'package:swms_user_auth_module/Model/account.dart';
 import 'package:swms_user_auth_module/Model/user.dart';
 import 'package:swms_user_auth_module/registration.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
@@ -8,28 +10,32 @@ import 'package:swms_user_auth_module/showAlert.dart';
 import 'Model/user.dart';
 
 class Login extends StatefulWidget {
-  //instantiate things
-  User user;
-  RegislogDAO regislogDAO = new RegislogDAO();
-  ShowAlert showAlert = new ShowAlert();
-
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
+  //instantiate things
+  Account account;
+  User user;
+  RegislogDAO regislogDAO = new RegislogDAO();
+  AccountDAO accountDAO = new AccountDAO();
+  ShowAlert showAlert = new ShowAlert();
+
   final _formKey = GlobalKey<FormState>();
+
   //listener for textfields
   TextEditingController nameControl = TextEditingController();
   TextEditingController pwControl = TextEditingController();
 
   @override
   void initState() {
-    if (widget.user == null) widget.user = new User.def();
+    if (user == null) user = new User.def();
+    if (account == null) account = new Account.def();
     nameControl = TextEditingController();
-    nameControl.text = widget.user.username;
+    nameControl.text = user.username;
     pwControl = TextEditingController();
-    pwControl.text = widget.user.password;
+    pwControl.text = user.password;
     super.initState();
   }
 
@@ -145,28 +151,32 @@ class _LoginState extends State<Login> {
   //save credentials
   void saveCre() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('id', widget.user.id);
-    prefs.setString('username', widget.user.username);
-    prefs.setString('pw', widget.user.password);
+    prefs.setInt('id', user.id);
+    prefs.setString('username', user.username);
+    prefs.setString('pw', user.password);
+    prefs.setStringList('accNumList', account.accList);
   }
 
   //handle login event
   Future<void> _handleLogin(BuildContext context) async {
     if (_formKey.currentState.validate()) {
       //show loading dialog
-      widget.showAlert.showLoadingDialog(context);
+      showAlert.showLoadingDialog(context);
       String username = nameControl.text;
       String password = pwControl.text;
       try {
-        String result =
-            await widget.regislogDAO.validateLogin(User.cre(username));
+        String result = await regislogDAO.validateLogin(User.cre(username));
         if (result == password) {
           //get user's unique id
           try {
-            int result = await widget.regislogDAO.getID(User.cre(username));
-            widget.user.id = result;
-            widget.user.username = username;
-            widget.user.password = password;
+            int result = await regislogDAO.getID(User.cre(username));
+            user.id = result;
+            user.username = username;
+            user.password = password;
+
+            List result2 = await accountDAO.getAccNum(result);
+            account.accList = result2;
+
             //save the credentials
             saveCre();
           } catch (e, stacktrace) {
@@ -175,13 +185,13 @@ class _LoginState extends State<Login> {
           }
           Navigator.of(_formKey.currentContext, rootNavigator: true)
               .pop(); //close loading dialog
-          return widget.showAlert.showLSuccess(context);
+          return showAlert.showLSuccess(context);
         }
         //close loading dialog
         Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
         print(result);
         //guard clause
-        return widget.showAlert.showLFailed(context);
+        return showAlert.showLFailed(context);
       } catch (e, stacktrace) {
         print(e);
         print(stacktrace);

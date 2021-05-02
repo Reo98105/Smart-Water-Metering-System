@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swms_user_auth_module/payment.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
+import 'package:swms_user_auth_module/waterReading.dart';
 
 import 'profile.dart';
 
@@ -91,7 +92,14 @@ class _DashboardState extends State<Dashboard> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WaterReading(),
+                    ),
+                  );
+                },
                 icon: Icon(Icons.bar_chart),
                 label: Text('Water Reading'),
                 style: ElevatedButton.styleFrom(
@@ -117,12 +125,14 @@ class _DashboardState extends State<Dashboard> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
               child: ElevatedButton.icon(
-                onPressed: () {Navigator.push(
+                onPressed: () {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => Payment(),
                     ),
-                  );},
+                  );
+                },
                 icon: Icon(Icons.monetization_on),
                 label: Text('Bills'),
                 style: ElevatedButton.styleFrom(
@@ -142,6 +152,12 @@ class _DashboardState extends State<Dashboard> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String username = prefs.getString('username');
     return username;
+  }
+
+  getAccNum() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var accList = prefs.getStringList('accNumList');
+    return accList;
   }
 
   //logout confirmation
