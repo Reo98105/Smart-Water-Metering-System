@@ -41,7 +41,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
   }
 
   @override
-  void initState() {
+  void initState() {    
+    super.initState();
+    getPassword();
+    _getOldPw();
+    getId();
+    _getId();
     if (widget.user == null) widget.user = new User.def();
     oldpw = TextEditingController();
     oldpw.text = widget.user.password;
@@ -49,7 +54,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
     newpw.text = widget.user.password1;
     renewpw = TextEditingController();
     renewpw.text = widget.user.password2;
-    super.initState();
   }
 
   @override
@@ -191,8 +195,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
   //handle update request
   Future<void> _handleUpdate(BuildContext context) async {
     String oldpass = oldpw.text;
-    print(_getOldPw());
-    print(_getId());
     if (_formKey.currentState.validate() && (oldpass == _getOldPw())) {
       String newpass = newpw.text;
       widget.showAlert.showLoadingDialog(context); //show loading pop up

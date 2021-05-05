@@ -52,6 +52,7 @@ class AccountDAO {
     List<String> accounts = [];
     //get the whole list
     String ps = 'select accNumber from supervision where user_ID = ?';
+
     try {
       var connect = await conn.getConnection();
       var results = await connect.query(ps, [userid]);
@@ -65,5 +66,25 @@ class AccountDAO {
       print(stacktrace);
     }
     return accounts;
+  }
+
+  //get account's nickname
+  Future<String> getAccName(var accNumber) async {
+    String accNickname;
+
+    String ps = 'select accNickname from supervision where accNumber = ?';
+
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps, [accNumber]);
+      for (var row in results) {
+        accNickname = row['accNickname'];
+      }
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    return accNickname;
   }
 }

@@ -191,9 +191,6 @@ class _AddAccState extends State<AddAcc> {
     String acc = accNo.text;
     String accName = nick.text;
     String pwd = pw.text;
-    print(_getPwd());
-    print(_getUserid());
-    print(pwd);
     //check if form empty and password are same
     if (_formKey.currentState.validate() && (pwd == _getPwd())) {
       try {
