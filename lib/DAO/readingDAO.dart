@@ -21,7 +21,6 @@ class ReadingDAO {
       print(e);
       print(stacktrace);
     }
-    print(reading);
     return reading;
   }
 
@@ -41,7 +40,6 @@ class ReadingDAO {
       print(e);
       print(stacktrace);
     }
-    print(timeStamp);
     return timeStamp;
   }
 }

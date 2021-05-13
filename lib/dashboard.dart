@@ -112,19 +112,6 @@ class _DashboardState extends State<Dashboard> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
               child: ElevatedButton.icon(
-                onPressed: () {},
-                icon: Icon(Icons.access_time),
-                label: Text('History'),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.cyan[400],
-                  elevation: 5.0,
-                  textStyle: TextStyle(fontSize: 20),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
-              child: ElevatedButton.icon(
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -135,6 +122,19 @@ class _DashboardState extends State<Dashboard> {
                 },
                 icon: Icon(Icons.monetization_on),
                 label: Text('Bills'),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.cyan[400],
+                  elevation: 5.0,
+                  textStyle: TextStyle(fontSize: 20),
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+              child: ElevatedButton.icon(
+                onPressed: () {},
+                icon: Icon(Icons.analytics_outlined),
+                label: Text('Analytics'),
                 style: ElevatedButton.styleFrom(
                   primary: Colors.cyan[400],
                   elevation: 5.0,

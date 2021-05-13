@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:swms_user_auth_module/dashboard.dart';
+import 'package:swms_user_auth_module/profile.dart';
 
 class ShowAlert {
   //processing alert dialog
@@ -147,6 +148,100 @@ class ShowAlert {
               'Failed to login.',
               style: TextStyle(fontSize: 17.0),
             ),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  showUpdateSuccess(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      title: Text('Success!'),
+      //actions of the dialog box
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.pop(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Profile(),
+              ),
+            );
+          },
+          child: Text('Back to profile'),
+        ),
+      ],
+      backgroundColor: Colors.grey[300],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      content: new Row(
+        children: [
+          Icon(
+            Icons.check_circle_outline,
+            color: Colors.green,
+            size: 40.0,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 5.0),
+            child: Text('Password has been\nsuccessfully updated!'),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  showGenericFailed(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      title: Text('Oops!'),
+      //actions of the dialog box
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(true);
+          },
+          child: Text('Retry'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Profile(),
+              ),
+            );
+          },
+          child: Text('Back to profile'),
+        ),
+      ],
+      backgroundColor: Colors.grey[300],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      content: new Row(
+        children: [
+          Icon(
+            Icons.error_outline,
+            color: Colors.red,
+            size: 40.0,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 5.0),
+            child: Text('Something went wrong!\nTry again later!'),
           ),
         ],
       ),

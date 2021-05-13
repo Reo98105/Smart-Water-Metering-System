@@ -8,7 +8,6 @@ import 'package:swms_user_auth_module/showAlert.dart';
 class UpdateProfile extends StatefulWidget {
   User user;
   UserDAO userDAO = new UserDAO();
-  ShowAlert showAlert = new ShowAlert();
 
   @override
   _UpdateProfileState createState() => _UpdateProfileState();
@@ -17,6 +16,8 @@ class UpdateProfile extends StatefulWidget {
 class _UpdateProfileState extends State<UpdateProfile> {
   int id;
   String oldpassword = '';
+
+  ShowAlert showAlert = new ShowAlert();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -192,111 +193,31 @@ class _UpdateProfileState extends State<UpdateProfile> {
     return password;
   }
 
+  void saveCre() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('pw', newpw.text);
+  }
+
   //handle update request
   Future<void> _handleUpdate(BuildContext context) async {
     String oldpass = oldpw.text;
     if (_formKey.currentState.validate() && (oldpass == _getOldPw())) {
       String newpass = newpw.text;
-      widget.showAlert.showLoadingDialog(context); //show loading pop up
+      showAlert.showLoadingDialog(context); //show loading pop up
       try {
         widget.user = new User.up(_getId(), newpass);
         int result = await widget.userDAO.updatePass(widget.user);
         print(result);
         if (result == 1) {
+          //update credential
+          saveCre();
           Navigator.of(_formKey.currentContext, rootNavigator: true)
               .pop(); //close the dialog
-          AlertDialog alert = AlertDialog(
-            title: Text('Success!'),
-            //actions of the dialog box
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UpdateProfile(),
-                    ),
-                  );
-                },
-                child: Text('Back to profile'),
-              ),
-            ],
-            backgroundColor: Colors.grey[300],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            content: new Row(
-              children: [
-                Icon(
-                  Icons.check_circle_outline,
-                  color: Colors.green,
-                  size: 40.0,
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Text('Password has been\nsuccessfully updated!'),
-                ),
-              ],
-            ),
-          );
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (BuildContext context) {
-              return alert;
-            },
-          );
+          showAlert.showUpdateSuccess(context);
         } else {
           Navigator.of(_formKey.currentContext, rootNavigator: true)
               .pop(); //close the dialog
-          //alert dialog design..?
-          AlertDialog alert = AlertDialog(
-            title: Text('Oops!'),
-            //actions of the dialog box
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-                child: Text('Retry'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UpdateProfile(),
-                    ),
-                  );
-                },
-                child: Text('Back to profile'),
-              ),
-            ],
-            backgroundColor: Colors.grey[300],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            content: new Row(
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  color: Colors.red,
-                  size: 40.0,
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Text('Something went wrong!\nTry again later!'),
-                ),
-              ],
-            ),
-          );
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (BuildContext context) {
-              return alert;
-            },
-          );
+          showAlert.showGenericFailed(context);
         }
       } catch (e, stacktrace) {
         print(e);

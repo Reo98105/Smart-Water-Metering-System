@@ -20,6 +20,9 @@ class _WaterReadingState extends State<WaterReading> {
   AccountDAO accountDAO = new AccountDAO();
   ReadingDAO readingDAO = new ReadingDAO();
 
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
+
   @override
   void initState() {
     super.initState();
@@ -36,127 +39,136 @@ class _WaterReadingState extends State<WaterReading> {
         title: Text("Water Reading"),
         backgroundColor: Colors.lightBlueAccent,
       ),
-      body: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.only(top: 40.0),
-              child: FutureBuilder(
-                future: getAccName(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(
-                      '${snapshot.data}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
+      body: RefreshIndicator(
+          onRefresh: _refresh,
+          key: _refreshIndicatorKey,
+          child: ListView(
+            children: <Widget>[
+              SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(top: 40.0),
+                      child: FutureBuilder(
+                        future: getAccName(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Text(
+                              '${snapshot.data}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                              ),
+                              textAlign: TextAlign.justify,
+                            );
+                          } else {
+                            return Text(
+                              'N/A',
+                              style: TextStyle(fontSize: 18.0),
+                            );
+                          }
+                        },
                       ),
-                      textAlign: TextAlign.justify,
-                    );
-                  } else {
-                    return Text(
-                      'N/A',
-                      style: TextStyle(fontSize: 18.0),
-                    );
-                  }
-                },
-              ),
-            ),
-            Container(
-              child: LiquidCustomProgressIndicator(
-                value: 0.7,
-                valueColor: AlwaysStoppedAnimation(Colors.blue),
-                backgroundColor: Colors.lightBlue[200],
-                direction: Axis.vertical,
-                shapePath: _buildCirclePath(),
-                //display reading of the account here
-                center: FutureBuilder<double>(
-                  future: getUsage(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Text(
-                        '${snapshot.data.toString()} \nLitres',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30.0,
-                        ),
-                        textAlign: TextAlign.center,
-                      );
-                    } else {
-                      return Text('N/A');
-                    }
-                  },
-                ),
-              ),
-            ),
-            Container(
-                padding: EdgeInsets.symmetric(vertical: 40.0),
-                alignment: Alignment.center,
-                child: FutureBuilder(
-                  future: getTimeStamp(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Text(
-                        'Last updated: ${snapshot.data.toString()}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0,
-                        ),
-                        textAlign: TextAlign.justify,
-                      );
-                    }
-                    if (snapshot.hasData == null) {
-                      return Text(
-                        'N/A',
-                        style: TextStyle(fontSize: 18.0),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  },
-                )),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 30.0),
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return StatefulBuilder(builder: (context, setState) {
-                          return AlertDialog(
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    //pop dialog
-                                    Navigator.of(context).pop(true);
-                                    //call function do something to update UI
-                                    setState(() {
-                                      getFutures();
-                                    });
-                                  },
-                                  child: Text('Confirm'),
+                    ),
+                    Container(
+                      child: LiquidCustomProgressIndicator(
+                        value: 0.7,
+                        valueColor: AlwaysStoppedAnimation(Colors.blue),
+                        backgroundColor: Colors.lightBlue[200],
+                        direction: Axis.vertical,
+                        shapePath: _buildCirclePath(),
+                        //display reading of the account here
+                        center: FutureBuilder<double>(
+                          future: getUsage(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Text(
+                                '${snapshot.data.toString()} \nLitres',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30.0,
                                 ),
-                              ],
-                              title: Text('Managed Accounts'),
-                              content: showList());
-                        });
-                      });
-                },
-                icon: Icon(Icons.home),
-                label: Text('Managed Accounts'),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.cyan[400],
-                  elevation: 5.0,
-                  textStyle: TextStyle(fontSize: 20),
+                                textAlign: TextAlign.center,
+                              );
+                            } else {
+                              return Text('N/A');
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    Container(
+                        padding: EdgeInsets.symmetric(vertical: 40.0),
+                        alignment: Alignment.center,
+                        child: FutureBuilder(
+                          future: getTimeStamp(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Text(
+                                'Last updated: ${snapshot.data.toString()}',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.0,
+                                ),
+                                textAlign: TextAlign.justify,
+                              );
+                            }
+                            if (snapshot.hasData == null) {
+                              return Text(
+                                'N/A',
+                                style: TextStyle(fontSize: 18.0),
+                              );
+                            } else {
+                              return Container();
+                            }
+                          },
+                        )),
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: 15.0, vertical: 30.0),
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return StatefulBuilder(
+                                    builder: (context, setState) {
+                                  return AlertDialog(
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            //pop dialog
+                                            Navigator.of(context).pop(true);
+                                            //call function do something to update UI
+                                            setState(() {
+                                              getFutures();
+                                            });
+                                          },
+                                          child: Text('Confirm'),
+                                        ),
+                                      ],
+                                      title: Text('Managed Accounts'),
+                                      content: showList());
+                                });
+                              });
+                        },
+                        icon: Icon(Icons.home),
+                        label: Text('Managed Accounts'),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.cyan[400],
+                          elevation: 5.0,
+                          textStyle: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
+              )
+            ],
+          )),
     );
   }
 
@@ -252,6 +264,12 @@ class _WaterReadingState extends State<WaterReading> {
     getUsage();
     getTimeStamp();
     getAccName();
+  }
+
+  Future _refresh() async {
+    setState(() {
+      getFutures();
+    });
   }
 }
 

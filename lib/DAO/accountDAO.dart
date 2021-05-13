@@ -4,6 +4,25 @@ import 'package:swms_user_auth_module/Model/account.dart';
 class AccountDAO {
   var conn = new Mysql();
 
+  //check against db if the acc number exist
+  Future<int> checkAccExist(int accNumber) async {
+    int status = 0;
+    String ps = 'select * from account where accNumber = ?';
+
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps, [accNumber]);
+
+      status = results.affectedRows;
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    print(status);
+    return status;
+  }
+
   //add account into db
   Future<int> addAcc(Account acc) async {
     int status = 0;

@@ -20,8 +20,10 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Dependacies
  flutter:
-    sdk: flutter
+  sdk: flutter
   mysql1: ^0.19.0
   shared_preferences: ^2.0.5
   cupertino_icons: ^1.0.0
   liquid_progress_indicator: ^0.3.2
+  intl: ^0.17.0
+  syncfusion_flutter_charts: ^19.1.63

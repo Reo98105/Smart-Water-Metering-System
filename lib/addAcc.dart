@@ -6,14 +6,15 @@ import 'package:swms_user_auth_module/showAlert.dart';
 import 'package:swms_user_auth_module/Model/account.dart';
 
 class AddAcc extends StatefulWidget {
-  ShowAlert showAlert = new ShowAlert();
-  Account account;
-  AccountDAO accDao = new AccountDAO();
   @override
   _AddAccState createState() => _AddAccState();
 }
 
 class _AddAccState extends State<AddAcc> {
+  Account account;
+  AccountDAO accDao = new AccountDAO();
+  ShowAlert showAlert = new ShowAlert();
+
   String pass = '';
   int userid;
 
@@ -25,13 +26,13 @@ class _AddAccState extends State<AddAcc> {
 
   @override
   void initState() {
-    if (widget.account == null) widget.account = new Account.def();
+    if (account == null) account = new Account.def();
     accNo = TextEditingController();
-    accNo.text = widget.account.accNumber;
+    accNo.text = account.accNumber;
     nick = TextEditingController();
-    nick.text = widget.account.accNickname;
+    nick.text = account.accNickname;
     pw = TextEditingController();
-    pw.text = widget.account.password;
+    pw.text = account.password;
     super.initState();
   }
 
@@ -195,9 +196,9 @@ class _AddAccState extends State<AddAcc> {
     if (_formKey.currentState.validate() && (pwd == _getPwd())) {
       try {
         //show loading dialog
-        widget.showAlert.showLoadingDialog(context);
-        widget.account = new Account.add(_getUserid(), acc, accName, pwd);
-        int result = await widget.accDao.addAcc(widget.account);
+        showAlert.showLoadingDialog(context);
+        account = new Account.add(_getUserid(), acc, accName, pwd);
+        int result = await accDao.addAcc(account);
         print(result);
         if (result == 1) {
           Navigator.of(_formKey.currentContext, rootNavigator: true)
@@ -247,108 +248,14 @@ class _AddAccState extends State<AddAcc> {
         } else {
           Navigator.of(_formKey.currentContext, rootNavigator: true)
               .pop(); //close the dialog
-          //remove it in the future
-          AlertDialog alert = AlertDialog(
-            title: Text('Oops!'),
-            //actions of the dialog box
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-                child: Text('Retry'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Profile(),
-                    ),
-                  );
-                },
-                child: Text('Back to profile'),
-              ),
-            ],
-            backgroundColor: Colors.grey[300],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            content: new Row(
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  color: Colors.red,
-                  size: 40.0,
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Text('Something went wrong!\nTry again later!'),
-                ),
-              ],
-            ),
-          );
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (BuildContext context) {
-              return alert;
-            },
-          );
+          showAlert.showGenericFailed(context);
         }
       } catch (e, stacktrace) {
         print(e);
         print(stacktrace);
       }
     } else {
-      //remove it in the future
-      AlertDialog alert = AlertDialog(
-        title: Text('Oops!'),
-        //actions of the dialog box
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-            child: Text('Retry'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Profile(),
-                ),
-              );
-            },
-            child: Text('Back to profile'),
-          ),
-        ],
-        backgroundColor: Colors.grey[300],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        content: new Row(
-          children: [
-            Icon(
-              Icons.error_outline,
-              color: Colors.red,
-              size: 40.0,
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 5.0),
-              child: Text('Something went wrong!\nTry again later!'),
-            ),
-          ],
-        ),
-      );
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
+      showAlert.showGenericFailed(context);
     }
   }
 }
