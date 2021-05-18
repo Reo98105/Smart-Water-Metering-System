@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swms_user_auth_module/analyticsPage.dart';
 import 'package:swms_user_auth_module/payment.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
 import 'package:swms_user_auth_module/waterReading.dart';
@@ -132,7 +133,13 @@ class _DashboardState extends State<Dashboard> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AnalyticsPage(),
+                      ));
+                },
                 icon: Icon(Icons.analytics_outlined),
                 label: Text('Analytics'),
                 style: ElevatedButton.styleFrom(

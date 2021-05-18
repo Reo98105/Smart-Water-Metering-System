@@ -13,12 +13,12 @@ class WaterReading extends StatefulWidget {
 }
 
 class _WaterReadingState extends State<WaterReading> {
+  AccountDAO accountDAO = new AccountDAO();
+  ReadingDAO readingDAO = new ReadingDAO();
+
   int id;
   Account account;
   var selectedAccount;
-
-  AccountDAO accountDAO = new AccountDAO();
-  ReadingDAO readingDAO = new ReadingDAO();
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
@@ -66,7 +66,7 @@ class _WaterReadingState extends State<WaterReading> {
                             );
                           } else {
                             return Text(
-                              'N/A',
+                              '-',
                               style: TextStyle(fontSize: 18.0),
                             );
                           }
@@ -75,7 +75,7 @@ class _WaterReadingState extends State<WaterReading> {
                     ),
                     Container(
                       child: LiquidCustomProgressIndicator(
-                        value: 0.7,
+                        value: 0.55,
                         valueColor: AlwaysStoppedAnimation(Colors.blue),
                         backgroundColor: Colors.lightBlue[200],
                         direction: Axis.vertical,
@@ -94,7 +94,7 @@ class _WaterReadingState extends State<WaterReading> {
                                 textAlign: TextAlign.center,
                               );
                             } else {
-                              return Text('N/A');
+                              return Text('-');
                             }
                           },
                         ),
@@ -118,7 +118,7 @@ class _WaterReadingState extends State<WaterReading> {
                             }
                             if (snapshot.hasData == null) {
                               return Text(
-                                'N/A',
+                                '-',
                                 style: TextStyle(fontSize: 18.0),
                               );
                             } else {
@@ -197,7 +197,6 @@ class _WaterReadingState extends State<WaterReading> {
                             value: account.accNumber,
                             groupValue: selectedAccount,
                             title: Text('${account.accNickname}'),
-                            subtitle: Text('${account.accNumber}'),
                             onChanged: (account) {
                               _setState(() => selectedAccount = account);
                             },
@@ -266,6 +265,7 @@ class _WaterReadingState extends State<WaterReading> {
     getAccName();
   }
 
+  //to refresh whole page
   Future _refresh() async {
     setState(() {
       getFutures();
