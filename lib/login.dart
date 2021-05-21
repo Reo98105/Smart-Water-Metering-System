@@ -154,7 +154,6 @@ class _LoginState extends State<Login> {
     prefs.setInt('id', user.id);
     prefs.setString('username', user.username);
     prefs.setString('pw', user.password);
-    prefs.setStringList('accNumList', account.accList);
   }
 
   //handle login event
@@ -173,9 +172,6 @@ class _LoginState extends State<Login> {
             user.id = result;
             user.username = username;
             user.password = password;
-
-            List result2 = await accountDAO.getAccNum(result);
-            account.accList = result2;
 
             //save the credentials
             saveCre();

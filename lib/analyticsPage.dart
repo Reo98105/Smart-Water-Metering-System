@@ -159,13 +159,6 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
     return id;
   }
 
-  //get accNum from sharedPreferences
-  getAccNum() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var accList = prefs.getStringList('accNumList');
-    return accList;
-  }
-
   //return accounts list
   Future<List<Account>> getAcc() async {
     List account = await accountDAO.getAccList(_getUserid());

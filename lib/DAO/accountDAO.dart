@@ -131,4 +131,57 @@ class AccountDAO {
     }
     return accNickname;
   }
+
+  //get account's detail
+  Future getAccDetail(var accNumber) async {
+    List<Account> accDetail = [];
+
+    String ps =
+        'select account.address, account.postCode, account.district, account.city, supervision.accNumber, supervision.accNickname ' +
+            'from account inner join supervision ' +
+            'on account.accNumber = supervision.accNumber ' +
+            'where account.accNumber = ?';
+
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps, [accNumber]);
+      for (var row in results) {
+        Account account = new Account();
+        account.address = row['address'];
+        account.postCode = row['postCode'];
+        account.district = row['district'];
+        account.city = row['city'];
+        account.accNumber = row['accNumber'];
+        account.accNickname = row['accNickname'];
+
+        accDetail.add(account);
+      }
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+
+    return accDetail;
+  }
+
+  //remove from supervision
+  Future removeAcc(var accNumber) async {
+    int status = 0;
+
+    String ps = 'delete from supervision where accNumber = ?';
+
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps, [accNumber]);
+
+      status = results.affectedRows;
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+
+    return status;
+  }
 }

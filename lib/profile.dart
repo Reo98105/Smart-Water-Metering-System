@@ -8,55 +8,30 @@ import 'package:swms_user_auth_module/addAcc.dart';
 import 'package:swms_user_auth_module/DAO/accountDAO.dart';
 
 class Profile extends StatefulWidget {
-  UserDAO userDAO = new UserDAO();
-  User user;
-
   @override
   _ProfileState createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
+  UserDAO userDAO = new UserDAO();
+  User user;
+
   String username = '';
+  String selectedAcc;
   int id;
-  Account account;
+  Account account, account2;
 
   AccountDAO accountDAO = new AccountDAO();
 
   SharedPreferences preferences;
 
-  //get userid
-  Future<int> getUserid() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int userid = prefs.getInt('id');
-    return userid;
-  }
-
-  //get username
-  Future<String> getUsername() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String username = prefs.getString('username');
-    return username;
-  }
-
-  //get username from sharepreferences
-  String _getUsername() {
-    getUsername().then((value) => setState(() {
-          username = value;
-        }));
-    return username;
-  }
-
-  //get userid from sharepreferences
-  int _getUserid() {
-    getUserid().then((value) => setState(() {
-          id = value;
-        }));
-    return id;
-  }
-
-  Future<List> getAcc() async {
-    List account = await accountDAO.getAcc(_getUserid());
-    return account;
+  @override
+  void initState() {
+    super.initState();
+    //call the future list*
+    getUserid();
+    _getUserid();
+    getAcc();
   }
 
   @override
@@ -121,7 +96,7 @@ class _ProfileState extends State<Profile> {
               margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),
               alignment: FractionalOffset.center,
               child: FutureBuilder(
-                future: widget.userDAO.getEmail(_getUsername()),
+                future: userDAO.getEmail(_getUsername()),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Text(
@@ -156,12 +131,47 @@ class _ProfileState extends State<Profile> {
                             //item data here
                             return Container(
                                 child: Card(
-                              child: Column(children: <Widget>[
-                                ListTile(
+                              child: Column(
+                                children: <Widget>[
+                                  ListTile(
                                     leading: Icon(Icons.home),
                                     title: Text('${account.accNickname}'),
-                                    subtitle: Text('${account.accNumber}'))
-                              ]),
+                                    subtitle: Text('${account.accNumber}'),
+                                    onTap: () {
+                                      setState(() {
+                                        account2 = snapshot.data[index];
+                                      });
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      //update dialog
+                                                      showUpdateDialog(context);
+                                                    },
+                                                    child: Text('Update'),
+                                                  ),
+                                                  TextButton(
+                                                    child: Text(
+                                                      'Remove',
+                                                      style: TextStyle(
+                                                          color: Colors.red),
+                                                    ),
+                                                    onPressed: () {
+                                                      //Remove confirmation dialog
+                                                      showRemoveDialog(context);
+                                                    },
+                                                  )
+                                                ],
+                                                content: _accDetail(
+                                                    account2.accNumber));
+                                          });
+                                    },
+                                  )
+                                ],
+                              ),
                             ));
                           });
                     }
@@ -191,5 +201,147 @@ class _ProfileState extends State<Profile> {
         ),
       ),
     );
+  }
+
+  //show account's detail, update or delete
+  _accDetail(var accNumber) {
+    return Container(
+      width: 200.0,
+      height: 125.0,
+      child: FutureBuilder(
+        future: getAccDetail(accNumber),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done ||
+              snapshot.hasData) {
+            return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        Account accDetail = snapshot.data[index];
+                        //item data here
+                        return Container(
+                            child: ListTile(
+                          leading: Icon(
+                            Icons.home,
+                            size: 45.0,
+                          ),
+                          title: Text(
+                            '${accDetail.accNickname}',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18.0),
+                          ),
+                          subtitle: Text(
+                              '${accDetail.accNumber}\n\n${accDetail.address}, ${accDetail.postCode}, ${accDetail.district}, ${accDetail.city}'),
+                        ));
+                      })
+                ]);
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
+  }
+
+  //show remove dialog
+  showRemoveDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Remove confirmation'),
+          content: Text('Are you sure to remove this account from your list?'),
+          actions: <Widget>[
+            TextButton(
+                onPressed: () {
+                  //trigger deletion function
+                  _handleDelete(account2.accNumber);
+                },
+                child: Text('Confirm')),
+            TextButton(
+                onPressed: () {
+                  //pop dialog
+                  Navigator.of(context).pop(true);
+                },
+                child: Text('Cancel'))
+          ],
+        );
+      },
+    );
+  }
+
+  //show update dialog
+  showUpdateDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          actions: <Widget>[
+            TextButton(
+                onPressed: () {
+                  //trigger update function
+                },
+                child: Text('Confirm')),
+            TextButton(
+                onPressed: () {
+                  //pop dialog
+                  Navigator.of(context).pop(true);
+                },
+                child: Text('Cancel'))
+          ],
+        );
+      },
+    );
+  }
+
+  //handle deletion
+  Future _handleDelete(var accNumber) async {
+    int result = await accountDAO.removeAcc(accNumber);
+    return result;
+  }
+
+  //get userid
+  Future<int> getUserid() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int userid = prefs.getInt('id');
+    return userid;
+  }
+
+  //get username
+  Future<String> getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String username = prefs.getString('username');
+    return username;
+  }
+
+  //get username from sharepreferences
+  String _getUsername() {
+    getUsername().then((value) => setState(() {
+          username = value;
+        }));
+    return username;
+  }
+
+  //get userid from sharepreferences
+  int _getUserid() {
+    getUserid().then((value) => setState(() {
+          id = value;
+        }));
+    return id;
+  }
+
+  Future<List> getAcc() async {
+    List account = await accountDAO.getAcc(_getUserid());
+    return account;
+  }
+
+  //get acc details
+  Future getAccDetail(var accNumber) async {
+    List accountDetail = await accountDAO.getAccDetail(accNumber);
+    return accountDetail;
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'DAO/accountDAO.dart';
-import 'DAO/accountDAO.dart';
 
 class Payment extends StatefulWidget {
   @override
@@ -12,14 +11,6 @@ class Payment extends StatefulWidget {
 class _PaymentState extends State<Payment> {
   int userid;
   AccountDAO accountDAO = new AccountDAO();
-
-  //get userid from sharepreferences
-  int _getUserid() {
-    getUserid().then((value) => setState(() {
-          userid = value;
-        }));
-    return userid;
-  }
 
   @override
   Widget build(BuildContext context) {

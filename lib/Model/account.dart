@@ -1,13 +1,12 @@
 class Account {
-  String accNumber, accNickname, password;
+  String accNumber, accNickname, password, address, district, city;
   var userid;
-  List accList;
+  int postCode;
 
   Account();
 
   Account.add(this.userid, this.accNumber, this.accNickname, this.password);
   Account.retrieve(this.userid);
-  Account.list(this.accList);
 
   Account.def();
 }

@@ -8,12 +8,13 @@ import 'package:swms_user_auth_module/waterReading.dart';
 import 'profile.dart';
 
 class Dashboard extends StatefulWidget {
-  ShowAlert showAlert = new ShowAlert();
   @override
   _DashboardState createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
+  ShowAlert showAlert = new ShowAlert();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -161,12 +162,6 @@ class _DashboardState extends State<Dashboard> {
     return username;
   }
 
-  getAccNum() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var accList = prefs.getStringList('accNumList');
-    return accList;
-  }
-
   //logout confirmation
   void _handleLogout(BuildContext context) {
     //show confirmation dialog
@@ -224,7 +219,7 @@ class _DashboardState extends State<Dashboard> {
     print(username);
     if (username == null) {
       //show loading dialog
-      widget.showAlert.showLoadingDialog(context);
+      showAlert.showLoadingDialog(context);
       //back to login screen
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
