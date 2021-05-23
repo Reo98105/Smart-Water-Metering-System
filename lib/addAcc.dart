@@ -26,6 +26,11 @@ class _AddAccState extends State<AddAcc> {
 
   @override
   void initState() {
+    super.initState();
+    getUserid();
+    _getUserid();
+    getPass();
+    _getPwd();
     if (account == null) account = new Account.def();
     accNo = TextEditingController();
     accNo.text = account.accNumber;
@@ -33,7 +38,6 @@ class _AddAccState extends State<AddAcc> {
     nick.text = account.accNickname;
     pw = TextEditingController();
     pw.text = account.password;
-    super.initState();
   }
 
   @override
@@ -197,54 +201,61 @@ class _AddAccState extends State<AddAcc> {
       try {
         //show loading dialog
         showAlert.showLoadingDialog(context);
-        account = new Account.add(_getUserid(), acc, accName, pwd);
-        int result = await accDao.addAcc(account);
-        print(result);
-        if (result == 1) {
-          Navigator.of(_formKey.currentContext, rootNavigator: true)
-              .pop(); //close the dialog
-          //remove it in the future
-          AlertDialog alert = AlertDialog(
-            title: Text('Success!'),
-            //actions of the dialog box
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Profile(),
+        String result = await accDao.checkAccExist(acc);
+        if (result == acc) {
+          try {
+            account = new Account.add(_getUserid(), acc, accName, pwd);
+            int result = await accDao.addAcc(account);
+            if (result == 1) {
+              Navigator.of(_formKey.currentContext, rootNavigator: true)
+                  .pop(); //close the dialog
+              //remove it in the future
+              AlertDialog alert = AlertDialog(
+                title: Text('Success!'),
+                //actions of the dialog box
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/profile', (Route<dynamic> route) => false);
+                    },
+                    child: Text('Back to profile'),
+                  ),
+                ],
+                backgroundColor: Colors.grey[300],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                content: new Row(
+                  children: [
+                    Icon(
+                      Icons.check_circle_outline,
+                      color: Colors.green,
+                      size: 40.0,
                     ),
-                  );
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Text('New account has been\nadded!'),
+                    ),
+                  ],
+                ),
+              );
+              showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) {
+                  return alert;
                 },
-                child: Text('Back to profile'),
-              ),
-            ],
-            backgroundColor: Colors.grey[300],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            content: new Row(
-              children: [
-                Icon(
-                  Icons.check_circle_outline,
-                  color: Colors.green,
-                  size: 40.0,
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Text('New account has been\nadded!'),
-                ),
-              ],
-            ),
-          );
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (BuildContext context) {
-              return alert;
-            },
-          );
+              );
+            } else {
+              Navigator.of(_formKey.currentContext, rootNavigator: true)
+                  .pop(); //close the dialog
+              showAlert.showGenericFailed(context);
+            }
+          } catch (e, stacktrace) {
+            print(e);
+            print(stacktrace);
+          }
         } else {
           Navigator.of(_formKey.currentContext, rootNavigator: true)
               .pop(); //close the dialog

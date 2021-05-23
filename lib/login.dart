@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swms_user_auth_module/DAO/accountDAO.dart';
 import 'package:swms_user_auth_module/DAO/regislogDAO.dart';
@@ -66,6 +67,11 @@ class _LoginState extends State<Login> {
                 scale: 1.2,
               ),
             ),
+            Center(
+                child: Text('View water meter much more easier with this app!',
+                    style: GoogleFonts.lato(
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic))),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 10.0),
               child: TextFormField(
@@ -185,7 +191,6 @@ class _LoginState extends State<Login> {
         }
         //close loading dialog
         Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
-        print(result);
         //guard clause
         return showAlert.showLFailed(context);
       } catch (e, stacktrace) {

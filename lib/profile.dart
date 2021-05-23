@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swms_user_auth_module/DAO/userDAO.dart';
 import 'package:swms_user_auth_module/Model/user.dart';
 import 'package:swms_user_auth_module/Model/account.dart';
+import 'package:swms_user_auth_module/showAlert.dart';
 import 'package:swms_user_auth_module/updateProfile.dart';
 import 'package:swms_user_auth_module/addAcc.dart';
 import 'package:swms_user_auth_module/DAO/accountDAO.dart';
@@ -13,30 +14,48 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  AccountDAO accountDAO = new AccountDAO();
   UserDAO userDAO = new UserDAO();
+  ShowAlert showAlert = new ShowAlert();
   User user;
 
   String username = '';
   String selectedAcc;
   int id;
-  Account account, account2;
+  Account account, account2, acc;
 
-  AccountDAO accountDAO = new AccountDAO();
+  final _formKey = GlobalKey<FormState>();
+
+  TextEditingController newName;
+  TextEditingController password;
 
   SharedPreferences preferences;
 
   @override
   void initState() {
     super.initState();
-    //call the future list*
     getUserid();
     _getUserid();
     getAcc();
+
+    if (acc == null) account = new Account.def();
+    newName = TextEditingController();
+    newName.text = account.accNickname;
+    password = TextEditingController();
+    password.text = account.password;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    newName.dispose();
+    password.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Profile"),
         backgroundColor: Colors.lightBlueAccent,
@@ -123,14 +142,14 @@ class _ProfileState extends State<Profile> {
                     if (snapshot.connectionState == ConnectionState.done ||
                         snapshot.hasData) {
                       return ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (context, index) {
-                            account = snapshot.data[index];
-                            //item data here
-                            return Container(
-                                child: Card(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          account = snapshot.data[index];
+                          //item data here
+                          return Container(
+                            child: Card(
                               child: Column(
                                 children: <Widget>[
                                   ListTile(
@@ -142,38 +161,43 @@ class _ProfileState extends State<Profile> {
                                         account2 = snapshot.data[index];
                                       });
                                       showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      //update dialog
-                                                      showUpdateDialog(context);
-                                                    },
-                                                    child: Text('Update'),
-                                                  ),
-                                                  TextButton(
-                                                    child: Text(
-                                                      'Remove',
-                                                      style: TextStyle(
-                                                          color: Colors.red),
-                                                    ),
-                                                    onPressed: () {
-                                                      //Remove confirmation dialog
-                                                      showRemoveDialog(context);
-                                                    },
-                                                  )
-                                                ],
-                                                content: _accDetail(
-                                                    account2.accNumber));
-                                          });
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () {
+                                                  //update dialog
+                                                  showUpdateDialog(context,
+                                                      account2.accNumber);
+                                                },
+                                                child: Text('Update'),
+                                              ),
+                                              TextButton(
+                                                child: Text(
+                                                  'Remove',
+                                                  style: TextStyle(
+                                                      color: Colors.red),
+                                                ),
+                                                onPressed: () {
+                                                  //Remove confirmation dialog
+                                                  showRemoveDialog(context);
+                                                },
+                                              )
+                                            ],
+                                            content:
+                                                _accDetail(account2.accNumber),
+                                          );
+                                        },
+                                      );
                                     },
                                   )
                                 ],
                               ),
-                            ));
-                          });
+                            ),
+                          );
+                        },
+                      );
                     }
                     if (snapshot.hasData == null) {
                       return Center(child: Text('No account has been added.'));
@@ -275,15 +299,60 @@ class _ProfileState extends State<Profile> {
   }
 
   //show update dialog
-  showUpdateDialog(BuildContext context) {
+  showUpdateDialog(BuildContext context, String accNum) {
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
+          title: Text('Update account nickname'),
+          content: Container(
+              height: 125.0,
+              child: Form(
+                  key: _formKey,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                          child: TextFormField(
+                            controller: newName,
+                            autofocus: true,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter new nickname';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'New account nickname',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                          child: TextFormField(
+                            controller: password,
+                            autofocus: true,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              suffixIcon: Icon(Icons.lock),
+                            ),
+                          ),
+                        ),
+                      ]))),
           actions: <Widget>[
             TextButton(
                 onPressed: () {
                   //trigger update function
+                  _handleUpdate(context, accNum);
                 },
                 child: Text('Confirm')),
             TextButton(
@@ -298,10 +367,56 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  //handle update
+  Future _handleUpdate(BuildContext context, String accNum) async {
+    //check form if there is empty
+    if (_formKey.currentState.validate()) {
+      showAlert.showLoadingDialog(context);
+      String newNickname = newName.text;
+      String pass = password.text;
+      String userid = _getUserid().toString();
+      String accNumber = accNum;
+
+      try {
+        //show loading dialog
+        showAlert.showLoadingDialog(context);
+        account = new Account.update(userid, newNickname, pass, accNumber);
+        int result = await accountDAO.updateAcc(account);
+        if (result == 1) {
+          Navigator.of(_formKey.currentContext, rootNavigator: true)
+              .pop(); //close loading dialog
+          showAlert.showUpdateNameSuccess(context);
+        } else {
+          Navigator.of(_formKey.currentContext, rootNavigator: true)
+              .pop(); //close loading dialog
+          showAlert.showGenericFailed(context);
+        }
+      } catch (e, stacktrace) {
+        print(e);
+        print(stacktrace);
+      }
+    }
+    return;
+  }
+
   //handle deletion
   Future _handleDelete(var accNumber) async {
-    int result = await accountDAO.removeAcc(accNumber);
-    return result;
+    try {
+      showAlert.showLoadingDialog(context);
+      int result = await accountDAO.removeAcc(accNumber);
+      if (result == 1) {
+        //pop dialog
+        Navigator.of(context).pop(true);
+        showAlert.showRemoveSuccess(context);
+      } else {
+        //pop dialog
+        Navigator.of(context).pop(true);
+        showAlert.showGenericFailed(context);
+      }
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
   }
 
   //get userid

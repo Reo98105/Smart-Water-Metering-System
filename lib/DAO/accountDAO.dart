@@ -4,23 +4,24 @@ import 'package:swms_user_auth_module/Model/account.dart';
 class AccountDAO {
   var conn = new Mysql();
 
-  //check against db if the acc number exist
-  Future<int> checkAccExist(int accNumber) async {
-    int status = 0;
-    String ps = 'select * from account where accNumber = ?';
+  //check against db if this acc number exist
+  Future checkAccExist(String accNum) async {
+    String accNumber;
+    String ps = 'select accNumber from account where accNumber = ? LIMIT 1';
 
     try {
       var connect = await conn.getConnection();
-      var results = await connect.query(ps, [accNumber]);
+      var results = await connect.query(ps, [accNum]);
 
-      status = results.affectedRows;
-      connect.close();
+      for (var row in results) {
+        accNumber = row['accNumber'];
+        connect.close();
+      }
     } catch (e, stacktrace) {
       print(e);
       print(stacktrace);
     }
-    print(status);
-    return status;
+    return accNumber;
   }
 
   //add account into db
@@ -182,6 +183,25 @@ class AccountDAO {
       print(stacktrace);
     }
 
+    return status;
+  }
+
+  //update account nickname
+  Future updateAcc(Account account) async {
+    int status = 0;
+
+    String ps = 'update supervision set accNickname = ? where user_ID = ? and accNumber = ?';
+
+    try {
+      var connect = await conn.getConnection();
+      var results =
+          await connect.query(ps, [account.accNickname, account.userid, account.accNumber]);
+      status = results.affectedRows;
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
     return status;
   }
 }
