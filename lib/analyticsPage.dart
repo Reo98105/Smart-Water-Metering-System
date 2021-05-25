@@ -18,7 +18,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
 
   Future futureAcc;
   int id;
-  var selectedAccount;
+  var selectedAccount, selectedType;
   List usage, price;
 
   @override
@@ -40,44 +40,77 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         body: SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 10.0,
-                  horizontal: 115.0,
-                ),
-                child: FutureBuilder<List<Account>>(
-                    future: getAcc(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done ||
-                          snapshot.hasData) {
-                        return new StatefulBuilder(
-                            builder: (context, _setState) => DropdownButton(
-                                  hint: Text(
-                                      selectedAccount ?? '-Select account-'),
-                                  icon: Icon(Icons.arrow_drop_down_outlined),
-                                  elevation: 16,
-                                  underline: Container(
-                                      height: 2, color: Colors.lightBlueAccent),
-                                  items: snapshot.data
-                                      .map<DropdownMenuItem>((value) {
-                                    return DropdownMenuItem(
-                                      value: value.accNumber,
-                                      child: Text('${value.accNickname}'),
-                                    );
-                                  }).toList(),
-                                  onChanged: (val) {
-                                    _setState(() {
-                                      selectedAccount = val;
-                                    });
-                                  },
-                                  value: selectedAccount,
-                                ));
-                      } else {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                    }),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 10.0,
+                      horizontal: 10.0,
+                    ),
+                    child: FutureBuilder<List<Account>>(
+                      future: getAcc(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done ||
+                            snapshot.hasData) {
+                          return new StatefulBuilder(
+                              builder: (context, _setState) => DropdownButton(
+                                    hint: Text(
+                                        selectedAccount ?? '-Select account-'),
+                                    icon: Icon(Icons.arrow_drop_down_outlined),
+                                    elevation: 16,
+                                    underline: Container(
+                                        height: 2,
+                                        color: Colors.lightBlueAccent),
+                                    items: snapshot.data
+                                        .map<DropdownMenuItem>((value) {
+                                      return DropdownMenuItem(
+                                        value: value.accNumber,
+                                        child: Text('${value.accNickname}'),
+                                      );
+                                    }).toList(),
+                                    onChanged: (val) {
+                                      _setState(() {
+                                        selectedAccount = val;
+                                      });
+                                    },
+                                    value: selectedAccount,
+                                  ));
+                        } else {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 10.0,
+                      horizontal: 10.0,
+                    ),
+                    child: DropdownButton(
+                      hint: Text(selectedType ?? '-Select type-'),
+                      icon: Icon(Icons.arrow_drop_down_outlined),
+                      elevation: 16,
+                      underline: Container(
+                        height: 2,
+                        color: Colors.lightBlueAccent,
+                      ),
+                      items: ['Payment', 'Water Usage']
+                          .map<DropdownMenuItem>((value) {
+                        return DropdownMenuItem(
+                          child: Text(value),
+                          value: value,
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          selectedType = val;
+                        });
+                      },
+                    ),
+                  )
+                ],
               ),
               Container(
                   padding: EdgeInsets.symmetric(
@@ -92,9 +125,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
 
   //function to render charts
   _renderChart() {
-    if (selectedAccount != null) {
+    if (selectedAccount != null && selectedType == 'Water Usage') {
       return FutureBuilder(
-        future: Future.wait([getUsage(), getPayAmount()]),
+        future: getUsage(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done ||
               snapshot.hasData) {
@@ -108,7 +141,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                 series: <ChartSeries>[
                   //render line chart
                   LineSeries<Analytics, DateTime>(
-                      dataSource: snapshot.data[0],
+                      dataSource: snapshot.data,
                       xValueMapper: (analytics, _) => analytics.dateTime,
                       yValueMapper: (analytics, _) => analytics.waterUsage,
                       markerSettings: MarkerSettings(
@@ -116,29 +149,41 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                       ))
                 ],
               ),
-              SfCartesianChart(
-                title: ChartTitle(text: 'Past Paid Amount'),
-                primaryXAxis: DateTimeAxis(
-                  intervalType: DateTimeIntervalType.months,
-                  interval: 1,
-                ),
-                series: <ChartSeries>[
-                  //render line chart
-                  LineSeries<Analytics, DateTime>(
-                      dataSource: snapshot.data[1],
-                      xValueMapper: (analytics, _) => analytics.dateTime,
-                      yValueMapper: (analytics, _) => analytics.price,
-                      markerSettings: MarkerSettings(
-                        isVisible: true,
-                      ))
-                ],
-              )
             ]);
           } else {
             return Center(child: CircularProgressIndicator());
           }
         },
       );
+    } else if (selectedAccount != null && selectedType == 'Payment') {
+      return FutureBuilder(
+          future: getPayAmount(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done ||
+                snapshot.hasData) {
+              return Column(children: <Widget>[
+                SfCartesianChart(
+                  title: ChartTitle(text: 'Past Paid Amount'),
+                  primaryXAxis: DateTimeAxis(
+                    intervalType: DateTimeIntervalType.months,
+                    interval: 1,
+                  ),
+                  series: <ChartSeries>[
+                    //render line chart
+                    LineSeries<Analytics, DateTime>(
+                        dataSource: snapshot.data,
+                        xValueMapper: (analytics, _) => analytics.dateTime,
+                        yValueMapper: (analytics, _) => analytics.price,
+                        markerSettings: MarkerSettings(
+                          isVisible: true,
+                        ))
+                  ],
+                )
+              ]);
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          });
     } else {
       return Center(child: Container(child: Text('No data to display')));
     }

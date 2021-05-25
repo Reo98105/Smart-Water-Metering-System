@@ -4,8 +4,7 @@ import 'package:swms_user_auth_module/analyticsPage.dart';
 import 'package:swms_user_auth_module/payment.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
 import 'package:swms_user_auth_module/waterReading.dart';
-
-import 'profile.dart';
+import 'package:swms_user_auth_module/profile.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -123,7 +122,7 @@ class _DashboardState extends State<Dashboard> {
                   );
                 },
                 icon: Icon(Icons.monetization_on),
-                label: Text('Bills'),
+                label: Text('Payment'),
                 style: ElevatedButton.styleFrom(
                   primary: Colors.cyan[400],
                   elevation: 5.0,
