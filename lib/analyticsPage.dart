@@ -131,25 +131,26 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done ||
               snapshot.hasData) {
-            return Column(children: <Widget>[
-              SfCartesianChart(
-                title: ChartTitle(text: 'Past Water Usage'),
-                primaryXAxis: DateTimeAxis(
-                  intervalType: DateTimeIntervalType.months,
-                  interval: 1,
-                ),
-                series: <ChartSeries>[
-                  //render line chart
-                  LineSeries<Analytics, DateTime>(
-                      dataSource: snapshot.data,
-                      xValueMapper: (analytics, _) => analytics.dateTime,
-                      yValueMapper: (analytics, _) => analytics.waterUsage,
-                      markerSettings: MarkerSettings(
-                        isVisible: true,
-                      ))
-                ],
+            return SfCartesianChart(
+              title: ChartTitle(text: 'Past Water Usage'),
+              primaryYAxis: NumericAxis(title: AxisTitle(text: 'Litre')),
+              primaryXAxis: DateTimeAxis(
+                title: AxisTitle(text: 'Months'),
+                intervalType: DateTimeIntervalType.months,
+                interval: 1,
               ),
-            ]);
+              series: <ChartSeries>[
+                //render line chart
+                LineSeries<Analytics, DateTime>(
+                  dataSource: snapshot.data,
+                  xValueMapper: (analytics, _) => analytics.dateTime,
+                  yValueMapper: (analytics, _) => analytics.waterUsage,
+                  markerSettings: MarkerSettings(
+                    isVisible: true,
+                  ),
+                )
+              ],
+            );
           } else {
             return Center(child: CircularProgressIndicator());
           }
@@ -157,33 +158,35 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
       );
     } else if (selectedAccount != null && selectedType == 'Payment') {
       return FutureBuilder(
-          future: getPayAmount(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done ||
-                snapshot.hasData) {
-              return Column(children: <Widget>[
-                SfCartesianChart(
-                  title: ChartTitle(text: 'Past Paid Amount'),
-                  primaryXAxis: DateTimeAxis(
-                    intervalType: DateTimeIntervalType.months,
-                    interval: 1,
+        future: getPayAmount(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done ||
+              snapshot.hasData) {
+            return SfCartesianChart(
+              title: ChartTitle(text: 'Past Paid Amount'),
+              primaryYAxis: NumericAxis(title: AxisTitle(text: 'RM')),
+              primaryXAxis: DateTimeAxis(
+                title: AxisTitle(text: 'Months'),
+                intervalType: DateTimeIntervalType.months,
+                interval: 1,
+              ),
+              series: <ChartSeries>[
+                //render line chart
+                LineSeries<Analytics, DateTime>(
+                  dataSource: snapshot.data,
+                  xValueMapper: (analytics, _) => analytics.dateTime,
+                  yValueMapper: (analytics, _) => analytics.price,
+                  markerSettings: MarkerSettings(
+                    isVisible: true,
                   ),
-                  series: <ChartSeries>[
-                    //render line chart
-                    LineSeries<Analytics, DateTime>(
-                        dataSource: snapshot.data,
-                        xValueMapper: (analytics, _) => analytics.dateTime,
-                        yValueMapper: (analytics, _) => analytics.price,
-                        markerSettings: MarkerSettings(
-                          isVisible: true,
-                        ))
-                  ],
                 )
-              ]);
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          });
+              ],
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      );
     } else {
       return Center(child: Container(child: Text('No data to display')));
     }

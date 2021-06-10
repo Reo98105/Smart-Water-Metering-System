@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swms_user_auth_module/Model/account.dart';
 import 'package:swms_user_auth_module/DAO/accountDAO.dart';
+import 'package:swms_user_auth_module/paymentDetail.dart';
 
 class Payment extends StatefulWidget {
   @override
@@ -14,6 +15,13 @@ class _PaymentState extends State<Payment> {
 
   int userid;
   Account acc, acc2;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserid();
+    _getUserid();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,36 +46,45 @@ class _PaymentState extends State<Payment> {
             ),
           ),
           Container(
-              child: FutureBuilder<List>(
-                  future: getAcc(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done ||
-                        snapshot.hasData) {
-                      return ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (context, index) {
-                            acc = snapshot.data[index];
-                            //item data here
-                            return Container(
-                                child: Card(
-                                    child: Column(children: <Widget>[
-                              ListTile(
-                                  leading: Icon(Icons.home),
-                                  title: Text('${acc.accNickname}'),
-                                  subtitle: Text('${acc.accNumber}'),
-                                  onTap: () {
-                                    /*setState(() {
-                                      acc2 = snapshot.data[index];
-                                    });*/
-                                  }),
-                            ])));
-                          });
-                    } else {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  }))
+            child: FutureBuilder<List>(
+              future: getAcc(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done ||
+                    snapshot.hasData) {
+                  return ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        acc = snapshot.data[index];
+                        //item data here
+                        return Container(
+                            child: Card(
+                                child: Column(children: <Widget>[
+                          ListTile(
+                              leading: Icon(Icons.home),
+                              title: Text('${acc.accNickname}'),
+                              subtitle: Text('${acc.accNumber}'),
+                              onTap: () {
+                                //set value acc2 to be the choosen accNumber
+                                setState(() {
+                                  acc2 = snapshot.data[index];
+                                });
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PaymentDetail(acc2),
+                                  ),
+                                );
+                              })
+                        ])));
+                      });
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          )
         ],
       ),
     );

@@ -149,57 +149,50 @@ class _ProfileState extends State<Profile> {
                           account = snapshot.data[index];
                           //item data here
                           return Container(
-                            child: Card(
-                              child: Column(
-                                children: <Widget>[
-                                  ListTile(
-                                    leading: Icon(Icons.home),
-                                    title: Text('${account.accNickname}'),
-                                    subtitle: Text('${account.accNumber}'),
-                                    onTap: () {
-                                      setState(() {
-                                        account2 = snapshot.data[index];
-                                      });
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            actions: <Widget>[
-                                              TextButton(
-                                                onPressed: () {
-                                                  //update dialog
-                                                  showUpdateDialog(context,
-                                                      account2.accNumber);
-                                                },
-                                                child: Text('Update'),
+                              child: Card(
+                                  child: Column(children: <Widget>[
+                            ListTile(
+                                leading: Icon(Icons.home),
+                                title: Text('${account.accNickname}'),
+                                subtitle: Text('${account.accNumber}'),
+                                onTap: () {
+                                  setState(() {
+                                    account2 = snapshot.data[index];
+                                  });
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                //update dialog
+                                                showUpdateDialog(context,
+                                                    account2.accNumber);
+                                              },
+                                              child: Text('Update'),
+                                            ),
+                                            TextButton(
+                                              child: Text(
+                                                'Remove',
+                                                style: TextStyle(
+                                                    color: Colors.red),
                                               ),
-                                              TextButton(
-                                                child: Text(
-                                                  'Remove',
-                                                  style: TextStyle(
-                                                      color: Colors.red),
-                                                ),
-                                                onPressed: () {
-                                                  //Remove confirmation dialog
-                                                  showRemoveDialog(context);
-                                                },
-                                              )
-                                            ],
-                                            content:
-                                                _accDetail(account2.accNumber),
-                                          );
-                                        },
-                                      );
-                                    },
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
+                                              onPressed: () {
+                                                //Remove confirmation dialog
+                                                showRemoveDialog(context);
+                                              },
+                                            )
+                                          ],
+                                          content:
+                                              _accDetail(account2.accNumber),
+                                        );
+                                      });
+                                })
+                          ])));
                         },
                       );
-                    }
-                    if (snapshot.hasData == null) {
+                    } else if (snapshot.hasData == null) {
                       return Center(child: Text('No account has been added.'));
                     } else {
                       return Center(child: CircularProgressIndicator());

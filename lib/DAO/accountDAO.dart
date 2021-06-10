@@ -162,7 +162,6 @@ class AccountDAO {
       print(e);
       print(stacktrace);
     }
-
     return accDetail;
   }
 
@@ -190,12 +189,13 @@ class AccountDAO {
   Future updateAcc(Account account) async {
     int status = 0;
 
-    String ps = 'update supervision set accNickname = ? where user_ID = ? and accNumber = ?';
+    String ps =
+        'update supervision set accNickname = ? where user_ID = ? and accNumber = ?';
 
     try {
       var connect = await conn.getConnection();
-      var results =
-          await connect.query(ps, [account.accNickname, account.userid, account.accNumber]);
+      var results = await connect
+          .query(ps, [account.accNickname, account.userid, account.accNumber]);
       status = results.affectedRows;
       connect.close();
     } catch (e, stacktrace) {

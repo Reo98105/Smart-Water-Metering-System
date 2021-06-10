@@ -178,7 +178,6 @@ class _LoginState extends State<Login> {
             user.id = result;
             user.username = username;
             user.password = password;
-
             //save the credentials
             saveCre();
           } catch (e, stacktrace) {

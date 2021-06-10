@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.8.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -33,7 +33,9 @@ dependencies:
   intl: ^0.17.0
   syncfusion_flutter_charts: ^19.1.63
   google_fonts: ^2.1.0
-  stripe_payment: ^1.0.6
+  http: ^0.13.3
+  flutter_payments_stripe_sdk: ^2.0.3
+  webview_flutter: ^2.0.8
 
 dev_dependencies:
   flutter_test:

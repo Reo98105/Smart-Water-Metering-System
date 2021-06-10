@@ -201,7 +201,7 @@ class _WaterReadingState extends State<WaterReading> {
                               _setState(() => selectedAccount = account);
                             },
                             selected: selectedAccount == account,
-                            activeColor: Colors.blueAccent,
+                            activeColor: Colors.blue.shade400,
                           ))
                         ]),
                       );
