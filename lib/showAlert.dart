@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:swms_user_auth_module/dashboard.dart';
+import 'package:swms_user_auth_module/dashboardAdmin.dart';
 import 'package:swms_user_auth_module/profile.dart';
 
 class ShowAlert {
@@ -83,6 +84,52 @@ class ShowAlert {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => Dashboard()),
+              (Route<dynamic> route) => false,
+            );
+          },
+          child: Text('Ok'),
+        ),
+      ],
+      backgroundColor: Colors.grey[300],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      content: new Row(
+        children: [
+          Icon(
+            Icons.check_circle_outline,
+            color: Colors.green,
+            size: 40.0,
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 20.0),
+            child: Text(
+              'Welcome back!',
+              style: TextStyle(fontSize: 17.0),
+            ),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  //login admin success dialog
+  showLSuccessA(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      title: Text('Logged in'),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => DashboardAdmin()),
               (Route<dynamic> route) => false,
             );
           },
@@ -321,6 +368,47 @@ class ShowAlert {
           Container(
             margin: EdgeInsets.symmetric(horizontal: 5.0),
             child: Text('Account name\nhas been updated!'),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  //account suspended message
+  showSuspended(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      title: Text('Account suspended'),
+      //actions of the dialog box
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(true);
+          },
+          child: Text('Back'),
+        ),
+      ],
+      backgroundColor: Colors.grey[300],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      content: new Row(
+        children: [
+          Icon(
+            Icons.error_outline,
+            color: Colors.red,
+            size: 40.0,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 5.0),
+            child: Text(
+                'Account has been suspended!\nPlease contact admin for more information.'),
           ),
         ],
       ),

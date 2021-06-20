@@ -170,27 +170,37 @@ class _LoginState extends State<Login> {
       String username = nameControl.text;
       String password = pwControl.text;
       try {
-        String result = await regislogDAO.validateLogin(User.cre(username));
-        if (result == password) {
-          //get user's unique id
-          try {
-            int result = await regislogDAO.getID(User.cre(username));
-            user.id = result;
-            user.username = username;
-            user.password = password;
-            //save the credentials
-            saveCre();
-          } catch (e, stacktrace) {
-            print(e);
-            print(stacktrace);
+        String pass = await regislogDAO.accPass(username);
+        String stat = await regislogDAO.accStatus(username);
+        if (password == pass && stat == 'active') {
+          int userType = await regislogDAO.getUserType(username);
+          //check user type
+          if (userType == 0) {
+            //get user's unique id
+            try {
+              int result = await regislogDAO.getID(User.cre(username));
+              user.id = result;
+              user.username = username;
+              user.password = password;
+              //save the credentials
+              saveCre();
+            } catch (e, stacktrace) {
+              print(e);
+              print(stacktrace);
+            }
+            Navigator.of(_formKey.currentContext, rootNavigator: true)
+                .pop(); //close loading dialog
+            return showAlert.showLSuccess(context);
+          } else if (userType == 1) {
+            return showAlert.showLSuccessA(context);
           }
-          Navigator.of(_formKey.currentContext, rootNavigator: true)
-              .pop(); //close loading dialog
-          return showAlert.showLSuccess(context);
+        } else if (stat == 'suspended') {
+          //close loading dialog
+          Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
+          //show suspended message
+          showAlert.showSuspended(context);
         }
-        //close loading dialog
-        Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
-        //guard clause
+        Navigator.of(context).pop(true);
         return showAlert.showLFailed(context);
       } catch (e, stacktrace) {
         print(e);

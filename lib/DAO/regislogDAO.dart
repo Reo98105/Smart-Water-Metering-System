@@ -21,15 +21,15 @@ class RegislogDAO {
     return status;
   }
 
-  //validate login info
-  Future<String> validateLogin(User user) async {
+  //get acc password
+  Future<String> accPass(var username) async {
     var pw = '';
     String ps = 'select uPassword from user where username = ?';
     try {
       var connect = await conn.getConnection();
-      var results = await connect.query(ps, [user.username]);
+      var results = await connect.query(ps, [username]);
       for (var row in results) {
-        pw = row[0];
+        pw = row['uPassword'];
       }
       connect.close();
     } catch (e, stacktrace) {
@@ -37,6 +37,42 @@ class RegislogDAO {
       print(stacktrace);
     }
     return pw;
+  }
+
+  //get acc status
+  Future<String> accStatus(var username) async {
+    var status = '';
+    String ps = 'select status from user where username = ?';
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps, [username]);
+      for (var row in results) {
+        status = row['status'];
+      }
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    return status;
+  }
+
+  //get user type
+  Future<int> getUserType(var username) async {
+    var userType;
+    String ps = 'select userType from user where username = ?';
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps, [username]);
+      for (var row in results) {
+        userType = row['userType'];
+      }
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    return userType;
   }
 
   //get user unique id

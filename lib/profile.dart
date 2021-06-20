@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swms_user_auth_module/DAO/userDAO.dart';
 import 'package:swms_user_auth_module/Model/user.dart';
 import 'package:swms_user_auth_module/Model/account.dart';
+import 'package:swms_user_auth_module/deleteProfile.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
 import 'package:swms_user_auth_module/updateProfile.dart';
 import 'package:swms_user_auth_module/addAcc.dart';
@@ -23,6 +24,10 @@ class _ProfileState extends State<Profile> {
   String selectedAcc;
   int id;
   Account account, account2, acc;
+
+  //option and value list
+  List optionList = <String>['Update password', 'Delete account'];
+  List optValueList = [UpdateProfile(), DeleteAccount()];
 
   final _formKey = GlobalKey<FormState>();
 
@@ -64,16 +69,18 @@ class _ProfileState extends State<Profile> {
             padding: EdgeInsets.only(right: 15.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UpdateProfile(),
-                  ),
-                );
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('Manage Account'),
+                        content: showAccountOptions(),
+                      );
+                    });
               },
               child: Icon(
-                Icons.edit_rounded,
-                size: 20.0,
+                Icons.error_outline_outlined,
+                size: 25.0,
               ),
             ),
           )
@@ -133,6 +140,21 @@ class _ProfileState extends State<Profile> {
               color: Colors.grey[400],
               thickness: 2,
               height: 30.0,
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(
+                bottom: 10.0,
+                left: 10.0,
+              ),
+              child: Text(
+                'Managed Account',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.left,
+              ),
             ),
             //display managed accounts
             Container(
@@ -357,6 +379,30 @@ class _ProfileState extends State<Profile> {
           ],
         );
       },
+    );
+  }
+
+  //show manage account options
+  showAccountOptions() {
+    return Container(
+      width: 200.0,
+      height: 125.0,
+      child: ListView.separated(
+        shrinkWrap: true,
+        itemCount: optionList.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text('${optionList[index]}'),
+            onTap: () {
+              //close manage acc option before navigate to other page
+              Navigator.of(context).pop(true);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => optValueList[index]));
+            },
+          );
+        },
+        separatorBuilder: (context, index) => const Divider(),
+      ),
     );
   }
 

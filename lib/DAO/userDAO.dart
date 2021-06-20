@@ -89,11 +89,29 @@ class UserDAO {
     String ps = 'update bill set user_ID = ?, status = ? where bill_ID = ?';
     try {
       var connect = await conn.getConnection();
-      var results = await connect.query(ps, [payment.userid, payment.status,payment.billid]);
+      var results = await connect
+          .query(ps, [payment.userid, payment.status, payment.billid]);
 
       status = results.affectedRows;
 
       connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    return status;
+  }
+
+  //update acc status
+  Future updateStatus(User user) async {
+    int status = 0;
+
+    String ps = 'update user set status = ? where user_ID = ?';
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps, [user.status, user.id]);
+
+      status = results.affectedRows;
     } catch (e, stacktrace) {
       print(e);
       print(stacktrace);
