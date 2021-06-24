@@ -192,6 +192,17 @@ class _LoginState extends State<Login> {
                 .pop(); //close loading dialog
             return showAlert.showLSuccess(context);
           } else if (userType == 1) {
+            try {
+              int result = await regislogDAO.getID(User.cre(username));
+              user.id = result;
+              user.username = username;
+              user.password = password;
+              //save the credentials
+              saveCre();
+            } catch (e, stacktrace) {
+              print(e);
+              print(stacktrace);
+            }
             return showAlert.showLSuccessA(context);
           }
         } else if (stat == 'suspended') {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swms_user_auth_module/analyticsPage.dart';
+import 'package:swms_user_auth_module/profileAdmin.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
 import 'package:swms_user_auth_module/waterReading.dart';
-import 'package:swms_user_auth_module/profile.dart';
 
 class DashboardAdmin extends StatefulWidget {
   @override
@@ -76,7 +76,7 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Profile(),
+                      builder: (context) => ProfileAdmin(),
                     ),
                   );
                 },

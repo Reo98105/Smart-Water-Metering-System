@@ -6,7 +6,7 @@ import 'package:swms_user_auth_module/Model/user.dart';
 class UserDAO {
   var conn = new Mysql();
 
-//get name from database
+  //get name from database
   Future<String> getEmail(String username) async {
     String email = '';
     String ps = 'select email from user where username = ?';
@@ -117,5 +117,27 @@ class UserDAO {
       print(stacktrace);
     }
     return status;
+  }
+
+  //retrieve user detail
+  Future getUserDetail(var userid) async {
+    List<User> userDetail = [];
+
+    String ps = 'select username, email, status from user where user_ID = ?';
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps, [userid]);
+
+      for (var row in results) {
+        User user = new User.test();
+        user.username = row['email'];
+
+        userDetail.add(user);
+      }
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    return userDetail;
   }
 }

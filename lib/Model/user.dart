@@ -8,6 +8,7 @@ class User {
   User.up(this.id, this.password);
   User.cre(this.username);
   User.status(this.status, this.id);
+  User.test();
 
   User(this.username, this.nric, this.password, this.email);
 
