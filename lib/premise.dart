@@ -15,6 +15,8 @@ class _PremiseState extends State<Premise> {
 
   Account account, account2;
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,7 +111,7 @@ class _PremiseState extends State<Premise> {
     );
   }
 
-  //show account's detail, update or delete
+  //show account's detail
   _accDetail(var accNumber) {
     return Container(
       width: 200.0,
@@ -158,14 +160,83 @@ class _PremiseState extends State<Premise> {
     );
   }
 
-  //show remove dialog
+  //show update dialog
+  showUpdateDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Update account nickname'),
+          content: Container(
+              height: 125.0,
+              child: Form(
+                  key: _formKey,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                          child: TextFormField(
+                            controller: newName,
+                            autofocus: true,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter new nickname';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'New account nickname',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                          child: TextFormField(
+                            controller: password,
+                            autofocus: true,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              suffixIcon: Icon(Icons.lock),
+                            ),
+                          ),
+                        ),
+                      ]))),
+          actions: <Widget>[
+            TextButton(
+                onPressed: () {
+                  //trigger update function
+                  //_handleUpdate(context, accNum);
+                },
+                child: Text('Confirm')),
+            TextButton(
+                onPressed: () {
+                  //pop dialog
+                  Navigator.of(context).pop(true);
+                },
+                child: Text('Cancel'))
+          ],
+        );
+      },
+    );
+  }
+
+  //show delete dialog
   showRemoveDialog(BuildContext context) {
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text('Remove confirmation'),
-          content: Text('Remove this account from the list?'),
+          content: Text('Remove this account?'),
           actions: <Widget>[
             TextButton(
                 onPressed: () {
@@ -184,6 +255,8 @@ class _PremiseState extends State<Premise> {
       },
     );
   }
+
+  //handle update
 
   //handle deletion
   Future _handleDelete(var accNumber) async {
