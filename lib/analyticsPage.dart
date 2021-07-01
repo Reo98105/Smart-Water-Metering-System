@@ -38,52 +38,51 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
           backgroundColor: Colors.lightBlueAccent,
         ),
         body: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 10.0,
-                      horizontal: 10.0,
-                    ),
-                    child: FutureBuilder<List<Account>>(
-                      future: getAcc(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done ||
-                            snapshot.hasData) {
-                          return new StatefulBuilder(
-                              builder: (context, _setState) => DropdownButton(
-                                    hint: Text(
-                                        selectedAccount ?? '-Select account-'),
-                                    icon: Icon(Icons.arrow_drop_down_outlined),
-                                    elevation: 16,
-                                    underline: Container(
-                                        height: 2,
-                                        color: Colors.lightBlueAccent),
-                                    items: snapshot.data
-                                        .map<DropdownMenuItem>((value) {
-                                      return DropdownMenuItem(
-                                        value: value.accNumber,
-                                        child: Text('${value.accNickname}'),
-                                      );
-                                    }).toList(),
-                                    onChanged: (val) {
-                                      _setState(() {
-                                        selectedAccount = val;
-                                      });
-                                    },
-                                    value: selectedAccount,
-                                  ));
-                        } else {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                      },
-                    ),
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 10.0,
+                    horizontal: 10.0,
                   ),
-                  Container(
+                  child: FutureBuilder<List<Account>>(
+                    future: getAcc(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done ||
+                          snapshot.hasData) {
+                        return new StatefulBuilder(
+                            builder: (context, _setState) => DropdownButton(
+                                  hint: Text(
+                                      selectedAccount ?? '-Select account-'),
+                                  icon: Icon(Icons.arrow_drop_down_outlined),
+                                  elevation: 16,
+                                  underline: Container(
+                                      height: 2, color: Colors.lightBlueAccent),
+                                  items: snapshot.data
+                                      .map<DropdownMenuItem>((value) {
+                                    return DropdownMenuItem(
+                                      value: value.accNumber,
+                                      child: Text('${value.accNickname}'),
+                                    );
+                                  }).toList(),
+                                  onChanged: (val) {
+                                    _setState(() {
+                                      selectedAccount = val;
+                                    });
+                                  },
+                                  value: selectedAccount,
+                                ));
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                ),
+                Container(
                     padding: EdgeInsets.symmetric(
                       vertical: 10.0,
                       horizontal: 10.0,
@@ -108,19 +107,14 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                           selectedType = val;
                         });
                       },
-                    ),
-                  )
-                ],
-              ),
-              Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                    vertical: 2.0,
-                  ),
-                  child: _renderChart()),
-            ],
-          ),
-        ));
+                    ))
+              ],
+            ),
+            Container(
+                padding: EdgeInsets.fromLTRB(0, 0, 12.5, 0),
+                child: _renderChart()),
+          ],
+        )));
   }
 
   //function to render charts
@@ -133,7 +127,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
               snapshot.hasData) {
             return SfCartesianChart(
               title: ChartTitle(text: 'Past Water Usage'),
-              primaryYAxis: NumericAxis(title: AxisTitle(text: 'Litre')),
+              primaryYAxis: NumericAxis(title: AxisTitle(text: 'Cubic Metre m\u{00b3}')),
               primaryXAxis: DateTimeAxis(
                 title: AxisTitle(text: 'Months'),
                 intervalType: DateTimeIntervalType.months,

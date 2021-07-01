@@ -5,7 +5,7 @@ import 'package:swms_user_auth_module/Model/user.dart';
 import 'package:swms_user_auth_module/Model/account.dart';
 import 'package:swms_user_auth_module/deleteProfile.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
-import 'package:swms_user_auth_module/updateProfile.dart';
+import 'package:swms_user_auth_module/updatePassword.dart';
 import 'package:swms_user_auth_module/addAcc.dart';
 import 'package:swms_user_auth_module/DAO/accountDAO.dart';
 
@@ -21,13 +21,12 @@ class _ProfileState extends State<Profile> {
   User user;
 
   String username = '';
-  String selectedAcc;
   int id;
   Account account, account2, acc;
 
   //option and value list
   List optionList = <String>['Update password', 'Delete account'];
-  List optValueList = [UpdateProfile(), DeleteAccount()];
+  List optValueList = [UpdatePassword(), DeleteAccount()];
 
   final _formKey = GlobalKey<FormState>();
 
@@ -87,152 +86,144 @@ class _ProfileState extends State<Profile> {
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            //profile icon
-            Container(
-              margin: EdgeInsets.fromLTRB(5.0, 50.0, 5.0, 0.0),
-              alignment: FractionalOffset.center,
-              child: Icon(
-                Icons.face_sharp,
-                size: 100.0,
-              ),
-            ),
-            //display username
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-              alignment: FractionalOffset.center,
-              child: FutureBuilder(
-                future: getUsername(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(
-                      snapshot.data,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18.0),
-                    );
-                  } else {
-                    return Text('Loading..');
-                  }
-                },
-              ),
-            ),
-            //display user email
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),
-              alignment: FractionalOffset.center,
-              child: FutureBuilder(
-                future: userDAO.getEmail(_getUsername()),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(
-                      snapshot.data,
-                      style: TextStyle(fontSize: 16.0),
-                    );
-                  } else {
-                    return Text('Loading..');
-                  }
-                },
-              ),
-            ),
-            //act as seperator
-            Divider(
-              color: Colors.grey[400],
-              thickness: 2,
-              height: 30.0,
-            ),
-            Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(
-                bottom: 10.0,
-                left: 10.0,
-              ),
-              child: Text(
-                'Managed Account',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.left,
-              ),
-            ),
-            //display managed accounts
-            Container(
-              child: FutureBuilder<List>(
-                  future: getAcc(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done ||
-                        snapshot.hasData) {
-                      return ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context, index) {
-                          account = snapshot.data[index];
-                          //item data here
-                          return Container(
-                              child: Card(
-                                  child: Column(children: <Widget>[
-                            ListTile(
-                                leading: Icon(Icons.home),
-                                title: Text('${account.accNickname}'),
-                                subtitle: Text('${account.accNumber}'),
-                                onTap: () {
-                                  setState(() {
-                                    account2 = snapshot.data[index];
-                                  });
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () {
-                                                //update dialog
-                                                showUpdateDialog(context,
-                                                    account2.accNumber);
-                                              },
-                                              child: Text('Update'),
-                                            ),
-                                            TextButton(
-                                              child: Text(
-                                                'Remove',
-                                                style: TextStyle(
-                                                    color: Colors.red),
-                                              ),
-                                              onPressed: () {
-                                                //Remove confirmation dialog
-                                                showRemoveDialog(context);
-                                              },
-                                            )
-                                          ],
-                                          content:
-                                              _accDetail(account2.accNumber),
-                                        );
-                                      });
-                                })
-                          ])));
-                        },
-                      );
-                    } else if (snapshot.hasData == null) {
-                      return Center(child: Text('No account has been added.'));
-                    } else {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  }),
-            )
-          ],
+          child: Column(children: <Widget>[
+        //profile icon
+        Container(
+          margin: EdgeInsets.fromLTRB(5.0, 50.0, 5.0, 0.0),
+          alignment: FractionalOffset.center,
+          child: Icon(
+            Icons.face_sharp,
+            size: 100.0,
+          ),
         ),
-      ),
+        //display username
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+          alignment: FractionalOffset.center,
+          child: FutureBuilder(
+            future: getUsername(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(
+                  snapshot.data,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                );
+              } else {
+                return Text('Loading..');
+              }
+            },
+          ),
+        ),
+        //display user email
+        Container(
+          margin: EdgeInsets.only(bottom: 15.0),
+          alignment: FractionalOffset.center,
+          child: FutureBuilder(
+            future: userDAO.getEmail(_getUsername()),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(
+                  snapshot.data,
+                  style: TextStyle(fontSize: 16.0),
+                );
+              } else {
+                return Text('Loading..');
+              }
+            },
+          ),
+        ),
+        //act as seperator
+        Divider(
+          color: Colors.grey[400],
+          thickness: 2,
+          height: 0.0,
+        ),
+        Container(
+          decoration: BoxDecoration(color: Colors.grey[350]),
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(
+            top: 10.0,
+            bottom: 10.0,
+            left: 10.0,
+          ),
+          child: Text(
+            'Managed Account',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.left,
+          ),
+        ),
+        //display managed accounts
+        Container(
+          child: FutureBuilder<List>(
+              future: getAcc(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done ||
+                    snapshot.hasData) {
+                  return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      account = snapshot.data[index];
+                      //item data here
+                      return Container(
+                          child: Card(
+                              child: Column(children: <Widget>[
+                        ListTile(
+                            leading: Icon(Icons.home),
+                            title: Text('${account.accNickname}'),
+                            subtitle: Text('${account.accNumber}'),
+                            onTap: () {
+                              setState(() {
+                                account2 = snapshot.data[index];
+                              });
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            //update dialog
+                                            showUpdateDialog(
+                                                context, account2.accNumber);
+                                          },
+                                          child: Text('Update'),
+                                        ),
+                                        TextButton(
+                                          child: Text(
+                                            'Remove',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                          onPressed: () {
+                                            //Remove confirmation dialog
+                                            showRemoveDialog(context);
+                                          },
+                                        )
+                                      ],
+                                      content: _accDetail(account2.accNumber),
+                                    );
+                                  });
+                            })
+                      ])));
+                    },
+                  );
+                } else if (snapshot.hasData == null) {
+                  return Center(child: Text('No account has been added.'));
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              }),
+        )
+      ])),
+      //add more manage account
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.lightBlueAccent,
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddAcc(),
-            ),
-          );
+          Navigator.of(context).pushNamed('/addAcc');
         },
         child: Icon(
           Icons.add,
@@ -246,7 +237,7 @@ class _ProfileState extends State<Profile> {
   _accDetail(var accNumber) {
     return Container(
       width: 200.0,
-      height: 125.0,
+      height: 140.0,
       child: FutureBuilder(
         future: getAccDetail(accNumber),
         builder: (context, snapshot) {
@@ -256,7 +247,7 @@ class _ProfileState extends State<Profile> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   ListView.builder(
-                      scrollDirection: Axis.vertical,
+                      physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
@@ -264,17 +255,26 @@ class _ProfileState extends State<Profile> {
                         //item data here
                         return Container(
                             child: ListTile(
-                          leading: Icon(
-                            Icons.home,
-                            size: 45.0,
+                          leading: Container(
+                            padding: EdgeInsets.only(top: 40.0, right: 8.0),
+                            child: Icon(
+                              Icons.home,
+                              size: 45.0,
+                            ),
                           ),
                           title: Text(
                             '${accDetail.accNickname}',
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18.0),
+                                fontWeight: FontWeight.bold, fontSize: 20.0),
                           ),
                           subtitle: Text(
-                              '${accDetail.accNumber}\n\n${accDetail.address}, ${accDetail.postCode}, ${accDetail.district}, ${accDetail.city}'),
+                            '${accDetail.accNumber}' +
+                                '\n\n${accDetail.address}, ' +
+                                '${accDetail.postCode}, ' +
+                                '${accDetail.district}, ' +
+                                '${accDetail.city}',
+                            style: TextStyle(fontSize: 15.0),
+                          ),
                         ));
                       })
                 ]);
@@ -293,7 +293,7 @@ class _ProfileState extends State<Profile> {
       builder: (context) {
         return AlertDialog(
           title: Text('Remove confirmation'),
-          content: Text('Are you sure to remove this account from your list?'),
+          content: Text('Remove this account from your managing list?'),
           actions: <Widget>[
             TextButton(
                 onPressed: () {

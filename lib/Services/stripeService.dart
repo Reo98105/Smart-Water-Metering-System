@@ -61,8 +61,8 @@ class StripeService {
   }
 
   //pay via FPX
-  static Future onPaymentMethodResult(String bankRef) async {
-    await createPaymentMethod(bankRef);
+  static Future onPaymentMethodResult(var amount) async {
+    await createPaymentIntent(amount);
     var res = await stripe.paymentIntents?.confirmPaymentIntent(clientSecret,
         data: ConfirmPaymentIntentRequest(
           paymentMethod: testPaymentMethodId,

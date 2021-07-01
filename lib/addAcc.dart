@@ -85,7 +85,7 @@ class _AddAccState extends State<AddAcc> {
                 autofocus: true,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter account number';
+                    return 'required*';
                   }
                   return null;
                 },
@@ -101,7 +101,7 @@ class _AddAccState extends State<AddAcc> {
                 autofocus: true,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter a nickname for the account';
+                    return 'required*';
                   }
                   return null;
                 },
@@ -117,7 +117,7 @@ class _AddAccState extends State<AddAcc> {
                 obscureText: true,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter your password';
+                    return 'required*';
                   }
                   return null;
                 },
@@ -207,17 +207,18 @@ class _AddAccState extends State<AddAcc> {
             account = new Account.add(_getUserid(), acc, accName, pwd);
             int result = await accDao.addAcc(account);
             if (result == 1) {
-              Navigator.of(_formKey.currentContext, rootNavigator: true)
-                  .pop(); //close the dialog
-              //remove it in the future
+              //close the dialog
+              Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
               AlertDialog alert = AlertDialog(
                 title: Text('Success!'),
                 //actions of the dialog box
                 actions: <Widget>[
                   TextButton(
                     onPressed: () {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/profile', (Route<dynamic> route) => false);
+                      int count = 0;
+                      Navigator.popUntil(context, (route) {
+                        return count++ == 2;
+                      });
                     },
                     child: Text('Back to profile'),
                   ),
@@ -248,8 +249,8 @@ class _AddAccState extends State<AddAcc> {
                 },
               );
             } else {
-              Navigator.of(_formKey.currentContext, rootNavigator: true)
-                  .pop(); //close the dialog
+              //close the dialog
+              Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
               showAlert.showGenericFailed(context);
             }
           } catch (e, stacktrace) {

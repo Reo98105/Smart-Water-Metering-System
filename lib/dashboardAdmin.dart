@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swms_user_auth_module/analyticsPage.dart';
+import 'package:swms_user_auth_module/analyticsAdmin.dart';
+import 'package:swms_user_auth_module/premise.dart';
 import 'package:swms_user_auth_module/profileAdmin.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
-import 'package:swms_user_auth_module/waterReading.dart';
 
 class DashboardAdmin extends StatefulWidget {
   @override
@@ -73,12 +73,7 @@ class _DashboardAdminState extends State<DashboardAdmin> {
               margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
               child: ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfileAdmin(),
-                    ),
-                  );
+                  Navigator.pushNamed(context, '/profileAdmin');
                 },
                 icon: Icon(Icons.person),
                 label: Text('Profile'),
@@ -93,15 +88,10 @@ class _DashboardAdminState extends State<DashboardAdmin> {
               margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
               child: ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WaterReading(),
-                    ),
-                  );
+                  Navigator.pushNamed(context, '/premise');
                 },
-                icon: Icon(Icons.bar_chart),
-                label: Text('Water Reading'),
+                icon: Icon(Icons.home_filled),
+                label: Text('Premise'),
                 style: ElevatedButton.styleFrom(
                   primary: Colors.cyan[400],
                   elevation: 5.0,
@@ -113,11 +103,7 @@ class _DashboardAdminState extends State<DashboardAdmin> {
               margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
               child: ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AnalyticsPage(),
-                      ));
+                  Navigator.pushNamed(context, '/analyticsAdmin');
                 },
                 icon: Icon(Icons.analytics_outlined),
                 label: Text('Analytics'),

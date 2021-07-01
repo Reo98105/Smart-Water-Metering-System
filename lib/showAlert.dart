@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swms_user_auth_module/dashboard.dart';
 import 'package:swms_user_auth_module/dashboardAdmin.dart';
 import 'package:swms_user_auth_module/profile.dart';
@@ -81,11 +82,8 @@ class ShowAlert {
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => Dashboard()),
-              (Route<dynamic> route) => false,
-            );
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/dashboard', (Route<dynamic> route) => false);
           },
           child: Text('Ok'),
         ),
@@ -127,11 +125,8 @@ class ShowAlert {
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => DashboardAdmin()),
-              (Route<dynamic> route) => false,
-            );
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/dashboardAdmin', (Route<dynamic> route) => false);
           },
           child: Text('Ok'),
         ),
@@ -215,11 +210,17 @@ class ShowAlert {
       //actions of the dialog box
       actions: <Widget>[
         TextButton(
-          onPressed: () {
-            Navigator.pushNamedAndRemoveUntil(
-                context, '/profile', (Route<dynamic> route) => false);
+          onPressed: () async {
+            //clear sharedpreferences before logging out
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.clear();
+            //check if sharedpreferences cleared
+            String username = prefs.getString('username');
+            print(username);
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                '/login', (Route<dynamic> route) => false);
           },
-          child: Text('Back to profile'),
+          child: Text('Confirm'),
         ),
       ],
       backgroundColor: Colors.grey[300],
@@ -235,7 +236,13 @@ class ShowAlert {
           ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 5.0),
-            child: Text('Password has been\nsuccessfully updated!'),
+            child: Text(
+              'Password has been\n' +
+                  'successfully updated!\n' +
+                  'Note: For security reason,\n' +
+                  'you will be logged out.',
+              textAlign: TextAlign.justify,
+            ),
           ),
         ],
       ),
@@ -307,10 +314,55 @@ class ShowAlert {
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            Navigator.pushNamedAndRemoveUntil(
-                context, '/profile', (Route<dynamic> route) => false);
+            int count = 0;
+            Navigator.popUntil(context, (route) {
+              return count++ == 3;
+            });
           },
           child: Text('Back to profile'),
+        ),
+      ],
+      backgroundColor: Colors.grey[300],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      content: new Row(
+        children: [
+          Icon(
+            Icons.check_circle_outline,
+            color: Colors.green,
+            size: 40.0,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 5.0),
+            child: Text('Account removed\nsuccessfully!'),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  //show delete success
+  showDeleteSuccess(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      title: Text('Remove successful'),
+      //actions of the dialog box
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            int count = 0;
+            Navigator.popUntil(context, (route) {
+              return count++ == 3;
+            });
+          },
+          child: Text('Confirm'),
         ),
       ],
       backgroundColor: Colors.grey[300],
@@ -348,8 +400,7 @@ class ShowAlert {
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            Navigator.pushNamedAndRemoveUntil(
-                context, '/profile', (Route<dynamic> route) => false);
+            Navigator.popAndPushNamed(context, '/profile');
           },
           child: Text('Back to profile'),
         ),
@@ -407,8 +458,46 @@ class ShowAlert {
           ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 5.0),
-            child: Text(
-                'Account has been suspended!\nPlease contact admin for more information.'),
+            child: Text('Account has been suspended!\n' +
+                'Please contact admin for more information.'),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  //show success add premise
+  showAddSuccess(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      title: Text('Premise Added'),
+      //actions of the dialog box
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {},
+          child: Text('Back'),
+        ),
+      ],
+      backgroundColor: Colors.grey[300],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      content: new Row(
+        children: [
+          Icon(
+            Icons.check_circle_outline,
+            color: Colors.green,
+            size: 40.0,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 5.0),
+            child: Text('New premise account\nhas been added!'),
           ),
         ],
       ),

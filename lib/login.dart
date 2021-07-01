@@ -188,8 +188,8 @@ class _LoginState extends State<Login> {
               print(e);
               print(stacktrace);
             }
-            Navigator.of(_formKey.currentContext, rootNavigator: true)
-                .pop(); //close loading dialog
+            //close loading dialog
+            Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
             return showAlert.showLSuccess(context);
           } else if (userType == 1) {
             try {
@@ -203,6 +203,8 @@ class _LoginState extends State<Login> {
               print(e);
               print(stacktrace);
             }
+            //close loading dialog
+            Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
             return showAlert.showLSuccessA(context);
           }
         } else if (stat == 'suspended') {

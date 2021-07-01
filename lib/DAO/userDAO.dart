@@ -112,6 +112,8 @@ class UserDAO {
       var results = await connect.query(ps, [user.status, user.id]);
 
       status = results.affectedRows;
+
+      connect.close();
     } catch (e, stacktrace) {
       print(e);
       print(stacktrace);
@@ -130,9 +132,12 @@ class UserDAO {
 
       for (var row in results) {
         User user = new User.test();
-        user.username = row['email'];
+        user.username = row['username'];
+        user.email = row['email'];
+        user.status = row['status'];
 
         userDetail.add(user);
+        connect.close();
       }
     } catch (e, stacktrace) {
       print(e);

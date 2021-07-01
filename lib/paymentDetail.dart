@@ -55,7 +55,6 @@ class _PaymentDetailState extends State<PaymentDetail> {
               textAlign: TextAlign.left,
             ),
           ),
-          //change to futurebuilder
           Container(
             child: FutureBuilder(
               future: getPaymentDetail(widget.account.accNumber),
@@ -63,47 +62,47 @@ class _PaymentDetailState extends State<PaymentDetail> {
                 if (snapshot.connectionState == ConnectionState.done ||
                     snapshot.hasData) {
                   return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      payment = snapshot.data[index];
-                      price = payment.price;
-                      payment.userid = id;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 5.0),
-                              child: Text(
-                                'Bill ID: ${payment.billid}',
-                                style: TextStyle(fontSize: 17.0),
-                              )),
-                          Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 5.0),
-                              child: Text(
-                                'Account Number: ${payment.accNumber}',
-                                style: TextStyle(fontSize: 17.0),
-                              )),
-                          Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 5.0),
-                              child: Text(
-                                'Amount: RM ${payment.price}',
-                                style: TextStyle(fontSize: 17.0),
-                              )),
-                          Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 5.0),
-                              child: Text(
-                                'Status: ${payment.status}',
-                                style: TextStyle(fontSize: 17.0),
-                              )),
-                        ],
-                      );
-                    },
-                  );
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        payment = snapshot.data[index];
+                        price = payment.price;
+                        payment.userid = id;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 5.0),
+                                child: Text(
+                                  'Bill ID: ${payment.billid}',
+                                  style: TextStyle(fontSize: 17.0),
+                                )),
+                            Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 5.0),
+                                child: Text(
+                                  'Account Number: ${payment.accNumber}',
+                                  style: TextStyle(fontSize: 17.0),
+                                )),
+                            Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 5.0),
+                                child: Text(
+                                  'Amount: RM ${payment.price}',
+                                  style: TextStyle(fontSize: 17.0),
+                                )),
+                            Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 5.0),
+                                child: Text(
+                                  'Status: ${payment.status}',
+                                  style: TextStyle(fontSize: 17.0),
+                                )),
+                          ],
+                        );
+                      });
                 } else {
                   return Center(
                     child: CircularProgressIndicator(),
@@ -142,20 +141,26 @@ class _PaymentDetailState extends State<PaymentDetail> {
                 ),
                 onChanged: (value) {
                   setState(() => test = value);
+                  //create payment method
+                  StripeService.createPaymentMethod(test);
                 },
                 activeColor: Colors.blue.shade400,
               )),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 150.0),
                 child: ElevatedButton(
+                  child: Text('Confirm'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.cyan[400],
+                    elevation: 5.0,
+                  ),
                   onPressed: () async {
                     //show loading dialog
                     showAlert.showLoadingDialog(context);
                     //convert and create intent
                     amount = (price * 100).toStringAsFixed(0);
-                    StripeService.createPaymentIntent(amount);
                     //confirm payment intent
-                    await StripeService.onPaymentMethodResult(test);
+                    await StripeService.onPaymentMethodResult(amount);
                     if (StripeService.paymentStatus == 'succeeded') {
                       //set status to paid
                       status = 'Paid';
@@ -183,7 +188,6 @@ class _PaymentDetailState extends State<PaymentDetail> {
                       );
                     }
                   },
-                  child: Text('Confirm'),
                 ),
               )
             ],

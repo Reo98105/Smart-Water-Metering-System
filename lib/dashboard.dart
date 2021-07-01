@@ -74,12 +74,7 @@ class _DashboardState extends State<Dashboard> {
               margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
               child: ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Profile(),
-                    ),
-                  );
+                  Navigator.pushNamed(context, '/profile');
                 },
                 icon: Icon(Icons.person),
                 label: Text('Profile'),
@@ -94,12 +89,7 @@ class _DashboardState extends State<Dashboard> {
               margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
               child: ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WaterReading(),
-                    ),
-                  );
+                  Navigator.pushNamed(context, '/waterReading');
                 },
                 icon: Icon(Icons.bar_chart),
                 label: Text('Water Reading'),
@@ -114,12 +104,7 @@ class _DashboardState extends State<Dashboard> {
               margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
               child: ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Payment(),
-                    ),
-                  );
+                  Navigator.pushNamed(context, '/payment');
                 },
                 icon: Icon(Icons.monetization_on),
                 label: Text('Payment'),
@@ -134,11 +119,7 @@ class _DashboardState extends State<Dashboard> {
               margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
               child: ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AnalyticsPage(),
-                      ));
+                  Navigator.pushNamed(context, '/analytics');
                 },
                 icon: Icon(Icons.analytics_outlined),
                 label: Text('Analytics'),
@@ -217,9 +198,7 @@ class _DashboardState extends State<Dashboard> {
     String username = prefs.getString('username');
     print(username);
     if (username == null) {
-      //show loading dialog
       showAlert.showLoadingDialog(context);
-      //back to login screen
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
     } else {

@@ -8,13 +8,14 @@ class AnalyticsDAO {
   Future getWaterUsage(var accNumber) async {
     List<Analytics> waterUsage = [];
 
-    String ps = 'select waterUsage, date(dateTime) from history where accNumber = ?';
+    String ps =
+        'select waterUsage, date(dateTime) from history where accNumber = ?';
 
     try {
       var connect = await conn.getConnection();
       var results = await connect.query(ps, [accNumber]);
 
-      for(var row in results){
+      for (var row in results) {
         Analytics analytics = new Analytics();
         analytics.waterUsage = row['waterUsage'];
         analytics.dateTime = row['date(dateTime)'];
@@ -30,7 +31,7 @@ class AnalyticsDAO {
   }
 
   //get pay amount
-  Future getPayAmount(var accNumber) async{
+  Future getPayAmount(var accNumber) async {
     List<Analytics> price = [];
 
     String ps = 'select price, date(dateTime) from history where accNumber = ?';
@@ -39,7 +40,7 @@ class AnalyticsDAO {
       var connect = await conn.getConnection();
       var results = await connect.query(ps, [accNumber]);
 
-      for(var row in results){
+      for (var row in results) {
         Analytics analytics = new Analytics();
         analytics.price = row['price'];
         analytics.dateTime = row['date(dateTime)'];
@@ -52,5 +53,31 @@ class AnalyticsDAO {
       print(stacktrace);
     }
     return price;
+  }
+
+  //get total water usage
+  Future getTotalUsage() async {
+    List<Analytics> total = [];
+
+    String ps =
+        'select sum(waterusage), date(dateTime) from history group by MONTH(dateTime)';
+
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps);
+
+      for (var row in results) {
+        Analytics analytics = new Analytics();
+        analytics.waterUsage = row['sum(waterusage)'];
+        analytics.dateTime = row['date(dateTime)'];
+
+        total.add(analytics);
+      }
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    return total;
   }
 }

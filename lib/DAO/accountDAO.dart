@@ -4,6 +4,27 @@ import 'package:swms_user_auth_module/Model/account.dart';
 class AccountDAO {
   var conn = new Mysql();
 
+  //add premise account
+  Future addAccount(Account acc) async {
+    int status = 0;
+    String ps = 'insert into account ' +
+        '(accNumber, address, postCode, district, city) ' +
+        'values(?,?,?,?,?)';
+
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps,
+          [acc.accNumber, acc.address, acc.postCode, acc.district, acc.city]);
+
+      status = results.affectedRows;
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    return status;
+  }
+
   //check against db if this acc number exist
   Future checkAccExist(String accNum) async {
     String accNumber;
@@ -24,11 +45,12 @@ class AccountDAO {
     return accNumber;
   }
 
-  //add account into db
+  //add manage account
   Future<int> addAcc(Account acc) async {
     int status = 0;
-    String ps =
-        'insert into supervision (user_ID, accNumber, accNickname) values (?, ?, ?)';
+    String ps = 'insert into supervision ' +
+        '(user_ID, accNumber, accNickname) ' +
+        'values (?, ?, ?)';
     try {
       var connect = await conn.getConnection();
       var results =
@@ -165,6 +187,34 @@ class AccountDAO {
     return accDetail;
   }
 
+  //get account's detail from account
+  Future getAccountDetail(var accNumber) async {
+    List<Account> accDetail = [];
+
+    String ps = 'select address, postCode, district, city ' +
+        'from account ' +
+        'where accNumber = ?';
+
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps, [accNumber]);
+      for (var row in results) {
+        Account account = new Account();
+        account.address = row['address'];
+        account.postCode = row['postCode'];
+        account.district = row['district'];
+        account.city = row['city'];
+
+        accDetail.add(account);
+      }
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    return accDetail;
+  }
+
   //remove from supervision
   Future removeAcc(var accNumber) async {
     int status = 0;
@@ -181,7 +231,25 @@ class AccountDAO {
       print(e);
       print(stacktrace);
     }
+    return status;
+  }
 
+  //permanently remove account
+  Future deleteAcc(var accNumber) async {
+    int status = 0;
+
+    String ps = 'delete from account where accNumber = ?';
+
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps, [accNumber]);
+
+      status = results.affectedRows;
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
     return status;
   }
 
@@ -203,5 +271,30 @@ class AccountDAO {
       print(stacktrace);
     }
     return status;
+  }
+
+  //get all available account
+  Future getAllAcc() async {
+    List<Account> acc = [];
+
+    String ps = 'select accNumber, district from account';
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps);
+
+      for (var row in results) {
+        Account account = new Account();
+        account.accNumber = row['accNumber'];
+        account.district = row['district'];
+
+        acc.add(account);
+      }
+
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    return acc;
   }
 }

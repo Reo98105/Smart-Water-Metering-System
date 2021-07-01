@@ -77,7 +77,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 controller: _controller1,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter Username';
+                    return 'required*';
                   }
                   return null;
                 },
@@ -93,7 +93,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 obscureText: true,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter Password';
+                    return 'required*';
                   }
                   return null;
                 },
@@ -109,7 +109,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 controller: _controller3,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter Email address';
+                    return 'required*';
                   }
                   return null;
                 },
@@ -131,7 +131,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 ),
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter NRIC';
+                    return 'required*';
                   }
                   return null;
                 },
