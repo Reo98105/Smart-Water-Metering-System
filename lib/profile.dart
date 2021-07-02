@@ -6,7 +6,6 @@ import 'package:swms_user_auth_module/Model/account.dart';
 import 'package:swms_user_auth_module/deleteProfile.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
 import 'package:swms_user_auth_module/updatePassword.dart';
-import 'package:swms_user_auth_module/addAcc.dart';
 import 'package:swms_user_auth_module/DAO/accountDAO.dart';
 
 class Profile extends StatefulWidget {
@@ -30,8 +29,7 @@ class _ProfileState extends State<Profile> {
 
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController newName;
-  TextEditingController password;
+  TextEditingController newName, password;
 
   SharedPreferences preferences;
 
@@ -50,13 +48,6 @@ class _ProfileState extends State<Profile> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    newName.dispose();
-    password.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -65,24 +56,22 @@ class _ProfileState extends State<Profile> {
         backgroundColor: Colors.lightBlueAccent,
         actions: <Widget>[
           Padding(
-            padding: EdgeInsets.only(right: 15.0),
-            child: GestureDetector(
-              onTap: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text('Manage Account'),
-                        content: showAccountOptions(),
-                      );
-                    });
-              },
-              child: Icon(
-                Icons.error_outline_outlined,
-                size: 25.0,
-              ),
-            ),
-          )
+              padding: EdgeInsets.only(right: 15.0),
+              child: GestureDetector(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text('Manage Account'),
+                            content: showAccountOptions(),
+                          );
+                        });
+                  },
+                  child: Icon(
+                    Icons.error_outline_outlined,
+                    size: 25.0,
+                  )))
         ],
       ),
       body: SafeArea(
@@ -233,6 +222,30 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  //show manage account options
+  showAccountOptions() {
+    return Container(
+      width: 200.0,
+      height: 125.0,
+      child: ListView.separated(
+        shrinkWrap: true,
+        itemCount: optionList.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text('${optionList[index]}'),
+            onTap: () {
+              //close manage acc option before navigate to other page
+              Navigator.of(context).pop(true);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => optValueList[index]));
+            },
+          );
+        },
+        separatorBuilder: (context, index) => const Divider(),
+      ),
+    );
+  }
+
   //show account's detail, update or delete
   _accDetail(var accNumber) {
     return Container(
@@ -321,7 +334,7 @@ class _ProfileState extends State<Profile> {
         return AlertDialog(
           title: Text('Update account nickname'),
           content: Container(
-              height: 125.0,
+              height: 165.0,
               child: Form(
                   key: _formKey,
                   child: Column(
@@ -335,7 +348,7 @@ class _ProfileState extends State<Profile> {
                             autofocus: true,
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter new nickname';
+                                return 'required*';
                               }
                               return null;
                             },
@@ -345,23 +358,21 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-                          child: TextFormField(
-                            controller: password,
-                            autofocus: true,
-                            obscureText: true,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter your password';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              suffixIcon: Icon(Icons.lock),
-                            ),
-                          ),
-                        ),
+                            margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                            child: TextFormField(
+                                controller: password,
+                                autofocus: true,
+                                obscureText: true,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'required*';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  suffixIcon: Icon(Icons.lock),
+                                ))),
                       ]))),
           actions: <Widget>[
             TextButton(
@@ -382,31 +393,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  //show manage account options
-  showAccountOptions() {
-    return Container(
-      width: 200.0,
-      height: 125.0,
-      child: ListView.separated(
-        shrinkWrap: true,
-        itemCount: optionList.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text('${optionList[index]}'),
-            onTap: () {
-              //close manage acc option before navigate to other page
-              Navigator.of(context).pop(true);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => optValueList[index]));
-            },
-          );
-        },
-        separatorBuilder: (context, index) => const Divider(),
-      ),
-    );
-  }
-
-  //handle update
+  //handle update event
   Future _handleUpdate(BuildContext context, String accNum) async {
     //check form if there is empty
     if (_formKey.currentState.validate()) {
@@ -417,17 +404,14 @@ class _ProfileState extends State<Profile> {
       String accNumber = accNum;
 
       try {
-        //show loading dialog
         showAlert.showLoadingDialog(context);
         account = new Account.update(userid, newNickname, pass, accNumber);
         int result = await accountDAO.updateAcc(account);
         if (result == 1) {
-          Navigator.of(_formKey.currentContext, rootNavigator: true)
-              .pop(); //close loading dialog
+          Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
           showAlert.showUpdateNameSuccess(context);
         } else {
-          Navigator.of(_formKey.currentContext, rootNavigator: true)
-              .pop(); //close loading dialog
+          Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
           showAlert.showGenericFailed(context);
         }
       } catch (e, stacktrace) {

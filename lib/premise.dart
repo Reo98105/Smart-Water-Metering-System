@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:swms_user_auth_module/DAO/accountDAO.dart';
 import 'package:swms_user_auth_module/Model/account.dart';
-import 'package:swms_user_auth_module/addPremise.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
 
 class Premise extends StatefulWidget {
@@ -17,36 +16,52 @@ class _PremiseState extends State<Premise> {
 
   final _formKey = GlobalKey<FormState>();
 
+  TextEditingController address, postCode, district, city;
+
+  @override
+  void initState() {
+    super.initState();
+    if (account == null) account = new Account();
+    address = TextEditingController();
+    address.text = account.address;
+    postCode = TextEditingController();
+    account.postCode = int.tryParse(postCode.text);
+    district = TextEditingController();
+    district.text = account.district;
+    city = TextEditingController();
+    city.text = account.city;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Premise"),
-        backgroundColor: Colors.lightBlueAccent,
-      ),
-      body: SafeArea(
-          child: Column(children: <Widget>[
-        Divider(
-          color: Colors.grey[600],
-          thickness: 2,
-          height: 0.0,
+        appBar: AppBar(
+          title: Text("Premise"),
+          backgroundColor: Colors.lightBlueAccent,
         ),
-        Container(
-            child: FutureBuilder(
-                future: getAllAcc(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done ||
-                      snapshot.hasData) {
-                    return ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context, index) {
-                          account = snapshot.data[index];
-                          //list data here
-                          return Container(
-                            child: Card(
-                                child: Column(children: <Widget>[
+        body: SafeArea(
+            child: Column(children: <Widget>[
+          Divider(
+            color: Colors.grey[600],
+            thickness: 2,
+            height: 0.0,
+          ),
+          Container(
+              child: FutureBuilder(
+                  future: getAllAcc(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done ||
+                        snapshot.hasData) {
+                      return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, index) {
+                            account = snapshot.data[index];
+                            //list data here
+                            return Container(
+                                child: Card(
+                                    child: Column(children: <Widget>[
                               ListTile(
                                   leading: Icon(Icons.place),
                                   title: Text('${account.accNumber}'),
@@ -63,8 +78,8 @@ class _PremiseState extends State<Premise> {
                                               TextButton(
                                                 onPressed: () {
                                                   //update dialog
-                                                  /*showUpdateDialog(context,
-                                                    account2.accNumber);*/
+                                                  showUpdateDialog(context,
+                                                      account2.accNumber);
                                                 },
                                                 child: Text('Update'),
                                               ),
@@ -85,90 +100,81 @@ class _PremiseState extends State<Premise> {
                                           );
                                         });
                                   })
-                            ])),
-                          );
-                        });
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                }))
-      ])),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.lightBlueAccent,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddPremise(),
-            ),
-          );
-        },
-        child: Icon(
-          Icons.add,
-          size: 30.0,
-        ),
-      ),
-    );
+                            ])));
+                          });
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  }))
+        ])),
+        floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.lightBlueAccent,
+            onPressed: () {
+              Navigator.pushNamed(context, '/addPremise');
+            },
+            child: Icon(
+              Icons.add,
+              size: 30.0,
+            )));
   }
 
   //show account's detail
   _accDetail(var accNumber) {
     return Container(
-      width: 200.0,
-      height: 110.0,
-      child: FutureBuilder(
-        future: getAccDetail(accNumber),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done ||
-              snapshot.hasData) {
-            return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        Account accDetail = snapshot.data[index];
-                        //item data here
-                        return Container(
-                            child: ListTile(
-                          leading: Container(
-                            padding: EdgeInsets.only(top: 28.0),
-                            child: Icon(
-                              Icons.place,
-                              size: 40.0,
-                            ),
-                          ),
-                          title: Text(
-                            '$accNumber',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 17.0),
-                          ),
-                          subtitle: Text('\n${accDetail.address}, ' +
-                              '${accDetail.postCode}, ' +
-                              '${accDetail.district}, ' +
-                              '${accDetail.city}'),
-                        ));
-                      })
-                ]);
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-    );
+        width: 200.0,
+        height: 110.0,
+        child: FutureBuilder(
+            future: getAccDetail(accNumber),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done ||
+                  snapshot.hasData) {
+                return Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, index) {
+                            Account accDetail = snapshot.data[index];
+                            //item data here
+                            return Container(
+                                child: ListTile(
+                              leading: Container(
+                                padding: EdgeInsets.only(top: 28.0),
+                                child: Icon(
+                                  Icons.place,
+                                  size: 40.0,
+                                ),
+                              ),
+                              title: Text(
+                                '$accNumber',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17.0),
+                              ),
+                              subtitle: Text('\n${accDetail.address}, ' +
+                                  '${accDetail.postCode}, ' +
+                                  '${accDetail.district}, ' +
+                                  '${accDetail.city}'),
+                            ));
+                          })
+                    ]);
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            }));
   }
 
   //show update dialog
-  showUpdateDialog(BuildContext context) {
+  showUpdateDialog(BuildContext context, String accNum) {
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Update account nickname'),
+          title: Text('Update premise detail'),
           content: Container(
-              height: 125.0,
+              height: 300.0,
               child: Form(
                   key: _formKey,
                   child: Column(
@@ -176,37 +182,64 @@ class _PremiseState extends State<Premise> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         Container(
-                          margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                          margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 5.0),
                           child: TextFormField(
-                            controller: newName,
-                            autofocus: true,
+                            controller: address,
+                            decoration: InputDecoration(
+                              labelText: 'Address',
+                            ),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter new nickname';
+                                return 'required*';
                               }
                               return null;
                             },
-                            decoration: InputDecoration(
-                              labelText: 'New account nickname',
-                            ),
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                          margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 5.0),
                           child: TextFormField(
-                            controller: password,
-                            autofocus: true,
-                            obscureText: true,
+                            controller: postCode,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'Postcode',
+                            ),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter your password';
+                                return 'required*';
                               }
                               return null;
                             },
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 5.0),
+                          child: TextFormField(
+                            controller: district,
                             decoration: InputDecoration(
-                              labelText: 'Password',
-                              suffixIcon: Icon(Icons.lock),
+                              labelText: 'District',
                             ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'required*';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
+                          child: TextFormField(
+                            controller: city,
+                            decoration: InputDecoration(
+                              labelText: 'City',
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'required*';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                       ]))),
@@ -214,7 +247,7 @@ class _PremiseState extends State<Premise> {
             TextButton(
                 onPressed: () {
                   //trigger update function
-                  //_handleUpdate(context, accNum);
+                  _handleUpdate(context, accNum);
                 },
                 child: Text('Confirm')),
             TextButton(
@@ -232,31 +265,58 @@ class _PremiseState extends State<Premise> {
   //show delete dialog
   showRemoveDialog(BuildContext context) {
     return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Remove confirmation'),
-          content: Text('Remove this account?'),
-          actions: <Widget>[
-            TextButton(
-                onPressed: () {
-                  //trigger deletion function
-                  _handleDelete(account2.accNumber);
-                },
-                child: Text('Confirm')),
-            TextButton(
-                onPressed: () {
-                  //pop dialog
-                  Navigator.of(context).pop(true);
-                },
-                child: Text('Cancel'))
-          ],
-        );
-      },
-    );
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Remove confirmation'),
+            content: Text('Remove this account?'),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () {
+                    //trigger deletion function
+                    _handleDelete(account2.accNumber);
+                  },
+                  child: Text('Confirm')),
+              TextButton(
+                  onPressed: () {
+                    //pop dialog
+                    Navigator.of(context).pop(true);
+                  },
+                  child: Text('Cancel'))
+            ],
+          );
+        });
   }
 
-  //handle update
+  //handle update event
+  Future _handleUpdate(BuildContext context, String accNum) async {
+    //check form if there is empty
+    if (_formKey.currentState.validate()) {
+      showAlert.showLoadingDialog(context);
+      String accountAddress = address.text;
+      int accountPostCode = int.tryParse(postCode.text);
+      String accountDistrict = district.text;
+      String accountCity = city.text;
+
+      try {
+        showAlert.showLoadingDialog(context);
+        account = new Account.updatePremise(accountAddress, accountPostCode,
+            accountDistrict, accountCity, accNum);
+        int result = await accountDAO.updatePremise(account);
+        if (result == 1) {
+          Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
+          showAlert.showUpdatePremiseSuccess(context);
+        } else {
+          Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
+          showAlert.showGenericFailed(context);
+        }
+      } catch (e, stacktrace) {
+        print(e);
+        print(stacktrace);
+      }
+    }
+    return;
+  }
 
   //handle deletion
   Future _handleDelete(var accNumber) async {

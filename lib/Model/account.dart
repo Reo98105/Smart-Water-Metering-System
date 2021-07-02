@@ -10,6 +10,8 @@ class Account {
   Account.retrieve(this.userid);
   Account.addPremise(
       this.accNumber, this.address, this.postCode, this.district, this.city);
+  Account.updatePremise(
+      this.address, this.postCode, this.district, this.city, this.accNumber);
 
   Account.def();
 }

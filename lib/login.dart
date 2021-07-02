@@ -5,7 +5,6 @@ import 'package:swms_user_auth_module/DAO/accountDAO.dart';
 import 'package:swms_user_auth_module/DAO/regislogDAO.dart';
 import 'package:swms_user_auth_module/Model/account.dart';
 import 'package:swms_user_auth_module/Model/user.dart';
-import 'package:swms_user_auth_module/registration.dart';
 import 'package:swms_user_auth_module/showAlert.dart';
 
 import 'Model/user.dart';
@@ -51,107 +50,101 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-        backgroundColor: Colors.lightBlueAccent,
-      ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              child: Image.asset(
-                'assets/swmsword.png',
-                scale: 1.2,
-              ),
-            ),
-            Center(
-                child: Text('View water meter much more easier with this app!',
-                    style: GoogleFonts.lato(
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic))),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10.0),
-              child: TextFormField(
-                controller: nameControl,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter Username';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10.0),
-              child: TextFormField(
-                controller: pwControl,
-                obscureText: true,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter Password';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  suffixIcon: Icon(Icons.lock),
-                ),
-              ),
-            ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        _handleLogin(context);
-                      },
-                      icon: Icon(Icons.login),
-                      label: Text('Login'),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.cyan[400],
-                        elevation: 5.0,
-                        textStyle: TextStyle(fontSize: 16.0),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Register(),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.app_registration),
-                      label: Text('Register'),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.cyan[400],
-                        elevation: 5.0,
-                        textStyle: TextStyle(fontSize: 16.0),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ],
+        appBar: AppBar(
+          title: Text('Login'),
+          backgroundColor: Colors.lightBlueAccent,
         ),
-      ),
-    );
+        body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                child: Image.asset(
+                  'assets/swmsword.png',
+                  scale: 1.2,
+                ),
+              ),
+              Center(
+                  child: Text(
+                      'View water meter much more easier with this app!',
+                      style: GoogleFonts.lato(
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic))),
+              Form(
+                  key: _formKey,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10.0),
+                          child: TextFormField(
+                            controller: nameControl,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter Username';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Username',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10.0),
+                          child: TextFormField(
+                            controller: pwControl,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter Password';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              suffixIcon: Icon(Icons.lock),
+                            ),
+                          ),
+                        ),
+                        Container(
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 5.0, vertical: 2.0),
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    _handleLogin(context);
+                                  },
+                                  icon: Icon(Icons.login),
+                                  label: Text('Login'),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.cyan[400],
+                                    elevation: 5.0,
+                                    textStyle: TextStyle(fontSize: 16.0),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 5.0, vertical: 2.0),
+                                  child: ElevatedButton.icon(
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, '/register');
+                                      },
+                                      icon: Icon(Icons.app_registration),
+                                      label: Text('Register'),
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.cyan[400],
+                                        elevation: 5.0,
+                                        textStyle: TextStyle(fontSize: 16.0),
+                                      )))
+                            ]))
+                      ]))
+            ]));
   }
 
   //save credentials
@@ -165,7 +158,6 @@ class _LoginState extends State<Login> {
   //handle login event
   Future<void> _handleLogin(BuildContext context) async {
     if (_formKey.currentState.validate()) {
-      //show loading dialog
       showAlert.showLoadingDialog(context);
       String username = nameControl.text;
       String password = pwControl.text;

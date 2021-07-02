@@ -276,7 +276,7 @@ class ShowAlert {
               ),
             );
           },
-          child: Text('Back to profile'),
+          child: Text('Back'),
         ),
       ],
       backgroundColor: Colors.grey[300],
@@ -314,12 +314,10 @@ class ShowAlert {
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            int count = 0;
-            Navigator.popUntil(context, (route) {
-              return count++ == 3;
-            });
+           Navigator.of(context).pushNamedAndRemoveUntil(
+                '/profile', ModalRoute.withName('/dashboard'));
           },
-          child: Text('Back to profile'),
+          child: Text('Confirm'),
         ),
       ],
       backgroundColor: Colors.grey[300],
@@ -357,10 +355,8 @@ class ShowAlert {
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            int count = 0;
-            Navigator.popUntil(context, (route) {
-              return count++ == 3;
-            });
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                '/premise', ModalRoute.withName('/dashboardAdmin'));
           },
           child: Text('Confirm'),
         ),
@@ -378,7 +374,7 @@ class ShowAlert {
           ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 5.0),
-            child: Text('Account removed\nsuccessfully!'),
+            child: Text('Premise removed\nsuccessfully!'),
           ),
         ],
       ),
@@ -392,7 +388,7 @@ class ShowAlert {
     );
   }
 
-  //show update success
+  //show update nickname success
   showUpdateNameSuccess(BuildContext context) {
     AlertDialog alert = AlertDialog(
       title: Text('Update successful'),
@@ -400,9 +396,10 @@ class ShowAlert {
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            Navigator.popAndPushNamed(context, '/profile');
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                '/profile', ModalRoute.withName('/dashboard'));
           },
-          child: Text('Back to profile'),
+          child: Text('Back'),
         ),
       ],
       backgroundColor: Colors.grey[300],
@@ -419,6 +416,47 @@ class ShowAlert {
           Container(
             margin: EdgeInsets.symmetric(horizontal: 5.0),
             child: Text('Account name\nhas been updated!'),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  //show update premise success
+  showUpdatePremiseSuccess(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      title: Text('Update successful'),
+      //actions of the dialog box
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                '/premise', ModalRoute.withName('/dashboardAdmin'));
+          },
+          child: Text('Back'),
+        ),
+      ],
+      backgroundColor: Colors.grey[300],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      content: new Row(
+        children: [
+          Icon(
+            Icons.check_circle_outline,
+            color: Colors.green,
+            size: 40.0,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 5.0),
+            child: Text('Premise details\nhas been updated!'),
           ),
         ],
       ),

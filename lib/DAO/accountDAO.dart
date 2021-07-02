@@ -273,6 +273,34 @@ class AccountDAO {
     return status;
   }
 
+  //Future update premise detail
+  Future updatePremise(Account account) async {
+    int status = 0;
+
+    String ps = 'update account ' +
+        'set address = ? , postCode = ?, district = ?, city = ? ' +
+        'where accNumber = ?';
+
+    try {
+      var connect = await conn.getConnection();
+      var results = await connect.query(ps, [
+        account.address,
+        account.postCode,
+        account.district,
+        account.city,
+        account.accNumber
+      ]);
+
+      status = results.affectedRows;
+
+      connect.close();
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    return status;
+  }
+
   //get all available account
   Future getAllAcc() async {
     List<Account> acc = [];

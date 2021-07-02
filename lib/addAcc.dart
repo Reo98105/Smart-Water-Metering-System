@@ -193,11 +193,12 @@ class _AddAccState extends State<AddAcc> {
 
   //handle add account
   Future<void> _handleAddAcc(BuildContext context) async {
-    String acc = accNo.text;
-    String accName = nick.text;
     String pwd = pw.text;
     //check if form empty and password are same
     if (_formKey.currentState.validate() && (pwd == _getPwd())) {
+      String acc = accNo.text;
+      String accName = nick.text;
+
       try {
         //show loading dialog
         showAlert.showLoadingDialog(context);
@@ -215,12 +216,10 @@ class _AddAccState extends State<AddAcc> {
                 actions: <Widget>[
                   TextButton(
                     onPressed: () {
-                      int count = 0;
-                      Navigator.popUntil(context, (route) {
-                        return count++ == 2;
-                      });
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/profile', ModalRoute.withName('/dashboard'));
                     },
-                    child: Text('Back to profile'),
+                    child: Text('Confirm'),
                   ),
                 ],
                 backgroundColor: Colors.grey[300],
@@ -258,8 +257,8 @@ class _AddAccState extends State<AddAcc> {
             print(stacktrace);
           }
         } else {
-          Navigator.of(_formKey.currentContext, rootNavigator: true)
-              .pop(); //close the dialog
+          //close the dialog
+          Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
           showAlert.showGenericFailed(context);
         }
       } catch (e, stacktrace) {
@@ -267,7 +266,7 @@ class _AddAccState extends State<AddAcc> {
         print(stacktrace);
       }
     } else {
-      showAlert.showGenericFailed(context);
+      return;
     }
   }
 }

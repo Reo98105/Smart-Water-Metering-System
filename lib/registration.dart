@@ -9,7 +9,6 @@ class Register extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Register'),
         backgroundColor: Colors.lightBlueAccent,
@@ -31,10 +30,7 @@ class _RegisterFormState extends State<RegisterForm> {
   bool isCheck = false;
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController _controller1;
-  TextEditingController _controller2;
-  TextEditingController _controller3;
-  TextEditingController _controller4;
+  TextEditingController _controller1, _controller2, _controller3, _controller4;
 
   @override
   void initState() {
@@ -63,222 +59,221 @@ class _RegisterFormState extends State<RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-              child: TextFormField(
-                autofocus: true,
-                controller: _controller1,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'required*';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-              child: TextFormField(
-                controller: _controller2,
-                obscureText: true,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'required*';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  suffixIcon: Icon(Icons.lock),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-              child: TextFormField(
-                controller: _controller3,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'required*';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
-              child: TextFormField(
-                controller: _controller4,
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-                ],
-                decoration: InputDecoration(
-                  labelText: 'NRIC',
-                ),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'required*';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: 5.0, vertical: 15.0),
-                    child: ElevatedButton.icon(
-                      //go to _handleRegister function..
-                      onPressed: isCheck
-                          ? () {
-                              _handleRegister(context);
+    return Container(
+        alignment: Alignment.center,
+        child: SingleChildScrollView(
+            child: Form(
+                key: _formKey,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                        child: TextFormField(
+                          autofocus: true,
+                          controller: _controller1,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'required*';
                             }
-                          : null,
-                      icon: Icon(Icons.app_registration),
-                      label: Text('Register'),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.cyan[400],
-                        elevation: 5.0,
-                        textStyle: TextStyle(fontSize: 16.0),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: 5.0, vertical: 15.0),
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Login(),
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Username',
                           ),
-                        );
-                      },
-                      icon: Icon(Icons.cancel),
-                      label: Text('Cancel'),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.cyan[400],
-                        elevation: 5.0,
-                        textStyle: TextStyle(fontSize: 16.0),
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(5.0, 100.0, 5.0, 5.0),
-              child: CheckboxListTile(
-                value: isCheck,
-                onChanged: (bool value) {
-                  setState(
-                    () {
-                      isCheck = value;
-                    },
-                  );
-                },
-                title: Text(
-                  'By clicking Register, you agree to our Terms and that you have read our Data Use Policy, including our Cookie Use.',
-                  style: TextStyle(fontSize: 12.0),
-                ),
-                controlAffinity: ListTileControlAffinity.leading,
-                activeColor: Colors.lightBlueAccent,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+                      Container(
+                        margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                        child: TextFormField(
+                          controller: _controller2,
+                          obscureText: true,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'required*';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            suffixIcon: Icon(Icons.lock),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                        child: TextFormField(
+                          controller: _controller3,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'required*';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
+                        child: TextFormField(
+                          controller: _controller4,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                          ],
+                          decoration: InputDecoration(
+                            labelText: 'NRIC',
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'required*';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 5.0, vertical: 15.0),
+                              child: ElevatedButton.icon(
+                                //go to _handleRegister function..
+                                onPressed: isCheck
+                                    ? () {
+                                        _handleRegister(context);
+                                      }
+                                    : null,
+                                icon: Icon(Icons.app_registration),
+                                label: Text('Register'),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.cyan[400],
+                                  elevation: 5.0,
+                                  textStyle: TextStyle(fontSize: 16.0),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 5.0, vertical: 15.0),
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  Navigator.pop(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Login(),
+                                    ),
+                                  );
+                                },
+                                icon: Icon(Icons.cancel),
+                                label: Text('Cancel'),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.cyan[400],
+                                  elevation: 5.0,
+                                  textStyle: TextStyle(fontSize: 16.0),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                          margin: EdgeInsets.fromLTRB(5.0, 100.0, 5.0, 5.0),
+                          child: CheckboxListTile(
+                            value: isCheck,
+                            onChanged: (bool value) {
+                              setState(
+                                () {
+                                  isCheck = value;
+                                },
+                              );
+                            },
+                            title: Text(
+                              'By clicking Register, you agree to our Terms and that you have read our Data Use Policy, including our Cookie Use.',
+                              style: TextStyle(fontSize: 12.0),
+                            ),
+                            controlAffinity: ListTileControlAffinity.leading,
+                            activeColor: Colors.lightBlueAccent,
+                          ))
+                    ]))));
   }
 
   //handle registration event
   Future<void> _handleRegister(BuildContext context) async {
-    if (_formKey.currentState.validate())
+    if (_formKey.currentState.validate()) {
       widget.showAlert.showLoadingDialog(context);
-    String username = _controller1.text;
-    String password = _controller2.text;
-    String email = _controller3.text;
-    int nric = int.tryParse(_controller4.text);
-    try {
-      widget.user = new User(username, nric, password, email);
-      int result = await widget.regisDAO.registerUser(widget.user);
-      print(result);
-      if (result == 1) {
-        Navigator.of(_formKey.currentContext, rootNavigator: true)
-            .pop(); //close the dialog
-        widget.showAlert.showRSuccess(context);
-      } else {
-        Navigator.of(_formKey.currentContext, rootNavigator: true)
-            .pop(); //close the dialog
-        AlertDialog alert = AlertDialog(
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: Text('Retry'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Login(),
-                  ),
-                );
-              },
-              child: Text('Back to login'),
-            ),
-          ],
-          backgroundColor: Colors.grey[300],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          content: new Row(
-            children: [
-              Icon(
-                Icons.error_outline,
-                color: Colors.red,
+      String username = _controller1.text;
+      String password = _controller2.text;
+      String email = _controller3.text;
+      int nric = int.tryParse(_controller4.text);
+      try {
+        widget.user = new User(username, nric, password, email);
+        int result = await widget.regisDAO.registerUser(widget.user);
+        print(result);
+        if (result == 1) {
+          //close the dialog
+          Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
+          widget.showAlert.showRSuccess(context);
+        } else {
+          //close the dialog
+          Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
+          AlertDialog alert = AlertDialog(
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: Text('Retry'),
               ),
-              SizedBox(
-                height: 15.0,
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 20.0),
-                child: Text('Something went wrong! Try again later!'),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Login(),
+                    ),
+                  );
+                },
+                child: Text('Back to login'),
               ),
             ],
-          ),
-        );
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            return alert;
-          },
-        );
+            backgroundColor: Colors.grey[300],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            content: new Row(
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: Colors.red,
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 20.0),
+                  child: Text('Something went wrong! Try again later!'),
+                ),
+              ],
+            ),
+          );
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return alert;
+            },
+          );
+        }
+      } catch (e, stacktrace) {
+        print(e);
+        print(stacktrace);
       }
-    } catch (e, stacktrace) {
-      print(e);
-      print(stacktrace);
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:swms_user_auth_module/addAcc.dart';
+import 'package:swms_user_auth_module/addPremise.dart';
 import 'package:swms_user_auth_module/analyticsAdmin.dart';
 import 'package:swms_user_auth_module/analyticsPage.dart';
 import 'package:swms_user_auth_module/dashboard.dart';
@@ -17,34 +18,51 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => Start());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => Start());
       case '/login':
-        return MaterialPageRoute(builder: (_) => Login());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => Login());
       case '/dashboard':
-        return MaterialPageRoute(builder: (_) => Dashboard());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => Dashboard());
       case '/dashboardAdmin':
-        return MaterialPageRoute(builder: (_) => DashboardAdmin());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => DashboardAdmin());
       case '/profile':
-        return MaterialPageRoute(builder: (_) => Profile());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => Profile());
       case '/profileAdmin':
-        return MaterialPageRoute(builder: (_) => ProfileAdmin());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => ProfileAdmin());
       case '/register':
-        return MaterialPageRoute(builder: (_) => Register());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => Register());
       case '/addAcc':
-        return MaterialPageRoute(builder: (_) => AddAcc());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => AddAcc());
+      case '/addPremise':
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => AddPremise());
       case '/waterReading':
-        return MaterialPageRoute(builder: (_) => WaterReading());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => WaterReading());
       case '/payment':
-        return MaterialPageRoute(builder: (_) => Payment());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => Payment());
       case '/premise':
-        return MaterialPageRoute(builder: (_) => Premise());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => Premise());
       case '/analytics':
-        return MaterialPageRoute(builder: (_) => AnalyticsPage());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => AnalyticsPage());
       case '/analyticsAdmin':
-        return MaterialPageRoute(builder: (_) => AnalyticsAdmin());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => AnalyticsAdmin());
       default:
         return MaterialPageRoute(
-            builder: (_) => Scaffold(
+            settings: settings,
+            builder: (context) => Scaffold(
                   body: Center(
                       child: Text('No route defined for ${settings.name}')),
                 ));
