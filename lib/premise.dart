@@ -326,7 +326,7 @@ class _PremiseState extends State<Premise> {
       if (result == 1) {
         //pop dialog
         Navigator.of(context).pop(true);
-        showAlert.showRemoveSuccess(context);
+        showAlert.showDeleteSuccess(context);
       } else {
         //pop dialog
         Navigator.of(context).pop(true);

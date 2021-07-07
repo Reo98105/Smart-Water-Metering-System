@@ -314,7 +314,7 @@ class ShowAlert {
       actions: <Widget>[
         TextButton(
           onPressed: () {
-           Navigator.of(context).pushNamedAndRemoveUntil(
+            Navigator.of(context).pushNamedAndRemoveUntil(
                 '/profile', ModalRoute.withName('/dashboard'));
           },
           child: Text('Confirm'),
@@ -518,7 +518,10 @@ class ShowAlert {
       //actions of the dialog box
       actions: <Widget>[
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                '/premise', ModalRoute.withName('/dashboardAdmin'));
+          },
           child: Text('Back'),
         ),
       ],

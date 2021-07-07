@@ -83,7 +83,10 @@ class _AnalyticsAdminState extends State<AnalyticsAdmin> {
                           DateFormat('yyyy-MM-dd').format(analytics.dateTime);
                       return ListTile(
                         title: Text('$formatted'),
-                        trailing: Text('${analytics.waterUsage} m\u{00b3}'),
+                        trailing: Text(
+                          '${analytics.waterUsage} m\u{00b3}',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
                       );
                     },
                   );

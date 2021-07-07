@@ -184,12 +184,10 @@ class _AddPremiseState extends State<AddPremise> {
         account = new Account.addPremise(accountNumber, accountAddress,
             accountPostcode, accountDistrict, accountCity);
         int result = await accountDAO.addAccount(account);
-        //debug purpose
-        print(result);
         if (result == 1) {
           //close loading dialog
           Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
-          showAlert.showUpdateSuccess(context);
+          showAlert.showAddSuccess(context);
         } else {
           //close the dialog
           Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
