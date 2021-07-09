@@ -40,73 +40,49 @@ class _PremiseState extends State<Premise> {
           backgroundColor: Colors.lightBlueAccent,
         ),
         body: SafeArea(
-            child: Column(children: <Widget>[
-          Divider(
-            color: Colors.grey[600],
-            thickness: 2,
-            height: 0.0,
-          ),
-          Container(
-              child: FutureBuilder(
-                  future: getAllAcc(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done ||
-                        snapshot.hasData) {
-                      return ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (context, index) {
-                            account = snapshot.data[index];
-                            //list data here
-                            return Container(
-                                child: Card(
-                                    child: Column(children: <Widget>[
-                              ListTile(
-                                  leading: Icon(Icons.place),
-                                  title: Text('${account.accNumber}'),
-                                  subtitle: Text('${account.district}'),
-                                  onTap: () {
-                                    setState(() {
-                                      account2 = snapshot.data[index];
-                                    });
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            actions: <Widget>[
-                                              TextButton(
-                                                onPressed: () {
-                                                  //update dialog
-                                                  showUpdateDialog(context,
-                                                      account2.accNumber);
-                                                },
-                                                child: Text('Update'),
-                                              ),
-                                              TextButton(
-                                                child: Text(
-                                                  'Remove',
-                                                  style: TextStyle(
-                                                      color: Colors.red),
-                                                ),
-                                                onPressed: () {
-                                                  //Remove confirmation dialog
-                                                  showRemoveDialog(context);
-                                                },
-                                              )
-                                            ],
-                                            content:
-                                                _accDetail(account2.accNumber),
-                                          );
+            child: Column(
+          children: <Widget>[
+            Divider(
+              color: Colors.grey[600],
+              thickness: 2,
+              height: 0.0,
+            ),
+            Container(
+                child: FutureBuilder(
+                    future: getAllAcc(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done ||
+                          snapshot.hasData) {
+                        return ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              account = snapshot.data[index];
+                              //list data here
+                              return Container(
+                                  child: Card(
+                                      child: Column(
+                                children: <Widget>[
+                                  ListTile(
+                                      leading: Icon(Icons.place),
+                                      title: Text('${account.accNumber}'),
+                                      subtitle: Text('${account.district}'),
+                                      onTap: () {
+                                        setState(() {
+                                          account2 = snapshot.data[index];
                                         });
-                                  })
-                            ])));
-                          });
-                    } else {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  }))
-        ])),
+                                        showAccDetail(context);
+                                      })
+                                ],
+                              )));
+                            });
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    }))
+          ],
+        )),
         floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.lightBlueAccent,
             onPressed: () {
@@ -116,6 +92,36 @@ class _PremiseState extends State<Premise> {
               Icons.add,
               size: 30.0,
             )));
+  }
+
+  //show account's detail dialog
+  showAccDetail(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      actions: <Widget>[
+        TextButton(
+            onPressed: () async {
+              List accList = await getAccDetail(account2.accNumber);
+              Account acc = accList[0];
+              address.text = acc.address;
+              postCode.text = acc.postCode.toString();
+              district.text = acc.district;
+              city.text = acc.city;
+              //update dialog
+              showUpdateDialog(context, account2.accNumber);
+            },
+            child: Text('Update')),
+        TextButton(
+            child: Text(
+              'Remove',
+              style: TextStyle(color: Colors.red),
+            ),
+            onPressed: () {
+              showRemoveDialog(context);
+            })
+      ],
+      content: _accDetail(account2.accNumber),
+    );
+    showDialog(context: context, builder: (context) => alert);
   }
 
   //show account's detail
@@ -167,14 +173,14 @@ class _PremiseState extends State<Premise> {
   }
 
   //show update dialog
-  showUpdateDialog(BuildContext context, String accNum) {
+  showUpdateDialog(BuildContext context, var accNumber) {
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text('Update premise detail'),
           content: Container(
-              height: 300.0,
+              height: 330.0,
               child: Form(
                   key: _formKey,
                   child: Column(
@@ -247,7 +253,7 @@ class _PremiseState extends State<Premise> {
             TextButton(
                 onPressed: () {
                   //trigger update function
-                  _handleUpdate(context, accNum);
+                  _handleUpdate(context, accNumber);
                 },
                 child: Text('Confirm')),
             TextButton(

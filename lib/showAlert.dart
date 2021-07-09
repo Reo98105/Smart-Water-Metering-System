@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swms_user_auth_module/dashboard.dart';
-import 'package:swms_user_auth_module/dashboardAdmin.dart';
 import 'package:swms_user_auth_module/profile.dart';
 
 class ShowAlert {
@@ -26,12 +24,9 @@ class ShowAlert {
       ),
     );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => alert);
   }
 
   //register success dialog
@@ -67,12 +62,9 @@ class ShowAlert {
       ),
     );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => alert);
   }
 
   //login success dialog
@@ -110,12 +102,9 @@ class ShowAlert {
       ),
     );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => alert);
   }
 
   //login admin success dialog
@@ -153,12 +142,9 @@ class ShowAlert {
       ),
     );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => alert);
   }
 
   //login failed dialog
@@ -195,12 +181,9 @@ class ShowAlert {
       ),
     );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => alert);
   }
 
   //show update password success dialog
@@ -248,12 +231,9 @@ class ShowAlert {
       ),
     );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => alert);
   }
 
   showGenericFailed(BuildContext context) {
@@ -298,12 +278,9 @@ class ShowAlert {
       ),
     );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => alert);
   }
 
   //show remove success
@@ -339,12 +316,9 @@ class ShowAlert {
       ),
     );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => alert);
   }
 
   //show delete success
@@ -380,12 +354,9 @@ class ShowAlert {
       ),
     );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => alert);
   }
 
   //show update nickname success
@@ -421,12 +392,9 @@ class ShowAlert {
       ),
     );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => alert);
   }
 
   //show update premise success
@@ -462,12 +430,9 @@ class ShowAlert {
       ),
     );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => alert);
   }
 
   //account suspended message
@@ -503,12 +468,9 @@ class ShowAlert {
       ),
     );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => alert);
   }
 
   //show success add premise
@@ -544,11 +506,8 @@ class ShowAlert {
       ),
     );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => alert);
   }
 }

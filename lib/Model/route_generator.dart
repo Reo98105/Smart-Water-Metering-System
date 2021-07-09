@@ -13,7 +13,7 @@ import 'package:swms_user_auth_module/premise.dart';
 import 'package:swms_user_auth_module/profile.dart';
 import 'package:swms_user_auth_module/profileAdmin.dart';
 import 'package:swms_user_auth_module/registration.dart';
-import 'package:swms_user_auth_module/startController.dart';
+import 'package:swms_user_auth_module/Model/startController.dart';
 import 'package:swms_user_auth_module/waterReading.dart';
 
 class RouteGenerator {

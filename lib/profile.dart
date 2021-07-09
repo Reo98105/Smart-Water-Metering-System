@@ -87,40 +87,31 @@ class _ProfileState extends State<Profile> {
         ),
         //display username
         Container(
-          margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-          alignment: FractionalOffset.center,
-          child: FutureBuilder(
-            future: getUsername(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(
-                  snapshot.data,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
-                );
-              } else {
-                return Text('Loading..');
-              }
-            },
-          ),
-        ),
-        //display user email
-        Container(
-          margin: EdgeInsets.only(bottom: 15.0),
-          alignment: FractionalOffset.center,
-          child: FutureBuilder(
-            future: userDAO.getEmail(_getUsername()),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(
-                  snapshot.data,
-                  style: TextStyle(fontSize: 16.0),
-                );
-              } else {
-                return Text('Loading..');
-              }
-            },
-          ),
-        ),
+            margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+            alignment: FractionalOffset.center,
+            child: FutureBuilder(
+                future: Future.wait(
+                    [getUsername(), userDAO.getEmail(_getUsername())]),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(children: <Widget>[
+                      Container(
+                          child: Text(
+                        snapshot.data[0],
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18.0),
+                      )),
+                      Container(
+                          padding: EdgeInsets.only(top: 5.0, bottom: 10.0),
+                          child: Text(
+                            snapshot.data[1],
+                            style: TextStyle(fontSize: 16.0),
+                          ))
+                    ]);
+                  } else {
+                    return Text('Loading..');
+                  }
+                })),
         //act as seperator
         Divider(
           color: Colors.grey[400],
@@ -162,40 +153,22 @@ class _ProfileState extends State<Profile> {
                           child: Card(
                               child: Column(children: <Widget>[
                         ListTile(
-                            leading: Icon(Icons.home),
+                            leading: Container(
+                                padding: EdgeInsets.only(
+                                  top: 5.0,
+                                  left: 5.0,
+                                ),
+                                child: Icon(
+                                  Icons.home,
+                                  size: 30.0,
+                                )),
                             title: Text('${account.accNickname}'),
                             subtitle: Text('${account.accNumber}'),
                             onTap: () {
                               setState(() {
                                 account2 = snapshot.data[index];
                               });
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () {
-                                            //update dialog
-                                            showUpdateDialog(
-                                                context, account2.accNumber);
-                                          },
-                                          child: Text('Update'),
-                                        ),
-                                        TextButton(
-                                          child: Text(
-                                            'Remove',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                          onPressed: () {
-                                            //Remove confirmation dialog
-                                            showRemoveDialog(context);
-                                          },
-                                        )
-                                      ],
-                                      content: _accDetail(account2.accNumber),
-                                    );
-                                  });
+                              showAccDetail(context, account.accNickname);
                             })
                       ])));
                     },
@@ -222,12 +195,40 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  //show account's detail dialog
+  showAccDetail(BuildContext context, var accNickname) {
+    AlertDialog alert = AlertDialog(
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            newName.text = accNickname;
+            //update dialog
+            showUpdateDialog(context, account2.accNumber);
+          },
+          child: Text('Update'),
+        ),
+        TextButton(
+          child: Text(
+            'Remove',
+            style: TextStyle(color: Colors.red),
+          ),
+          onPressed: () {
+            showRemoveDialog(context);
+          },
+        )
+      ],
+      content: _accDetail(account2.accNumber),
+    );
+    showDialog(context: context, builder: (context) => alert);
+  }
+
   //show manage account options
   showAccountOptions() {
     return Container(
       width: 200.0,
       height: 125.0,
       child: ListView.separated(
+        physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: optionList.length,
         itemBuilder: (context, index) {
