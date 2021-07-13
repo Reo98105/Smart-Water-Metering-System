@@ -19,7 +19,6 @@ For help getting started with Flutter, view our
 samples, guidance on mobile development, and a full API reference.
 
 ## Dependencies
- flutter:
   sdk: flutter 
   mysql1: ^0.19.0 
   shared_preferences: ^2.0.5 
