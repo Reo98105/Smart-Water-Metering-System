@@ -259,14 +259,78 @@ class _AddAccState extends State<AddAcc> {
         } else {
           //close the dialog
           Navigator.of(_formKey.currentContext, rootNavigator: true).pop();
-          showAlert.showGenericFailed(context);
+          AlertDialog alert = AlertDialog(
+            title: Text('Oops!'),
+            //actions of the dialog box
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: Text('Back'),
+              ),
+            ],
+            backgroundColor: Colors.grey[300],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            content: new Row(
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: Colors.red,
+                  size: 40.0,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  child: Text('Account does not exist!'),
+                ),
+              ],
+            ),
+          );
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => alert);
         }
       } catch (e, stacktrace) {
         print(e);
         print(stacktrace);
       }
     } else {
-      return;
+      AlertDialog alert = AlertDialog(
+        title: Text('Oops!'),
+        //actions of the dialog box
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            child: Text('Back'),
+          ),
+        ],
+        backgroundColor: Colors.grey[300],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        content: new Row(
+          children: [
+            Icon(
+              Icons.error_outline,
+              color: Colors.red,
+              size: 40.0,
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 5.0),
+              child: Text('Please check your\npassword'),
+            ),
+          ],
+        ),
+      );
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => alert);
     }
   }
 }

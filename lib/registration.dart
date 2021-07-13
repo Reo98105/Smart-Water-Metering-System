@@ -228,18 +228,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
-                child: Text('Retry'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Login(),
-                    ),
-                  );
-                },
-                child: Text('Back to login'),
+                child: Text('Back'),
               ),
             ],
             backgroundColor: Colors.grey[300],
@@ -257,7 +246,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 20.0),
-                  child: Text('Something went wrong! Try again later!'),
+                  child: Text('User may have been existed.'),
                 ),
               ],
             ),

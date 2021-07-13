@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swms_user_auth_module/profile.dart';
 
 class ShowAlert {
   //processing dialog
@@ -36,9 +35,9 @@ class ShowAlert {
         TextButton(
           onPressed: () {
             Navigator.popUntil(
-                context, ModalRoute.withName(Navigator.defaultRouteName));
+                context, ModalRoute.withName('/login'));
           },
-          child: Text('Back to login'),
+          child: Text('confirm'),
         ),
       ],
       backgroundColor: Colors.grey[300],
@@ -56,7 +55,7 @@ class ShowAlert {
           ),
           Container(
             margin: EdgeInsets.only(left: 20.0),
-            child: Text('Register successful!'),
+            child: Text('Registeration successful!'),
           ),
         ],
       ),
@@ -173,7 +172,7 @@ class ShowAlert {
           Container(
             margin: EdgeInsets.only(left: 20.0),
             child: Text(
-              'Failed to login.',
+              'Account or password is\nincorrect',
               style: TextStyle(fontSize: 17.0),
             ),
           ),
@@ -244,17 +243,6 @@ class ShowAlert {
         TextButton(
           onPressed: () {
             Navigator.of(context).pop(true);
-          },
-          child: Text('Retry'),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Profile(),
-              ),
-            );
           },
           child: Text('Back'),
         ),

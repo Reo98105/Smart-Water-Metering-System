@@ -18,12 +18,15 @@ For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-## Dependacies
+## Dependencies
  flutter:
-  sdk: flutter
-  mysql1: ^0.19.0
-  shared_preferences: ^2.0.5
-  cupertino_icons: ^1.0.0
-  liquid_progress_indicator: ^0.3.2
-  intl: ^0.17.0
-  syncfusion_flutter_charts: ^19.1.63
+  sdk: flutter 
+  mysql1: ^0.19.0 
+  shared_preferences: ^2.0.5 
+  cupertino_icons: ^1.0.0 
+  liquid_progress_indicator: ^0.3.2 
+  intl: ^0.17.0 
+  syncfusion_flutter_charts: ^19.1.63 
+  google_fonts: ^2.1.0 
+  flutter_payments_stripe_sdk: ^2.0.3 
+  dcdg: ^3.1.0 
