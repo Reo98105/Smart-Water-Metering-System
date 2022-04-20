@@ -1,4 +1,4 @@
-# swms_user_auth_module
+# Smart Water Metering System
 
 Flutter project of Final Year Project UMT.
 
